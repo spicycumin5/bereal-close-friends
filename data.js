@@ -18,22 +18,23 @@ window.DEMO = (() => {
     miriam: 'Irvine, University Town Center',
     timmy: 'Los Angeles, South Park',
     aimee: 'Manhattan, New York',
+    ben: 'Los Angeles, Downtown',
   };
 
   // The main phone belongs to "me". In two-phone mode, the second phone is `secondPhone`.
-  const me = { id: 'me', name: 'Kyumin', username: 'kyumin', avatar: realAvatar('me') };
+  const me = { id: 'me', name: 'Kyumin', username: 'spicycumin', avatar: realAvatar('me') };
   const secondPhone = 'ben';
   // Whose phone slides in to accept Kyumin's request in one-phone mode (if they were sent one).
   const acceptingPhone = 'evan';
 
   // `reactions` = RealMojis exchanged with Kyumin this month; drives onboarding suggestions.
   const friends = [
-    { id: 'aimee',  name: 'Aimee',  username: 'aimee',      img: 5,  reactions: 9 },
+    { id: 'aimee',  name: 'Aimee',  username: 'aimeeebeling', img: 5,  reactions: 9 },
     { id: 'jordan', name: 'Jordan', username: 'jordanb',    img: 12, reactions: 6 },
-    { id: 'cherry', name: 'Cherry', username: 'cherry',     img: 47, reactions: 23 },
-    { id: 'evan',   name: 'Evan',   username: 'evan',       img: 33, reactions: 18 },
-    { id: 'miriam', name: 'Miriam', username: 'miriam',     img: 44, reactions: 15 },
-    { id: 'timmy',  name: 'Timmy',  username: 'timmy',      img: 13, reactions: 12 },
+    { id: 'cherry', name: 'Cherry', username: 'cherrywui',  img: 47, reactions: 23 },
+    { id: 'evan',   name: 'Evan',   username: 'evaninrig',  img: 33, reactions: 18 },
+    { id: 'miriam', name: 'Miriam', username: 'miriam_kim', img: 44, reactions: 15 },
+    { id: 'timmy',  name: 'Timmy',  username: 't1mmywu',    img: 13, reactions: 12 },
     { id: 'chloe',  name: 'Chloe',  username: 'chloe.dub',  img: 9,  reactions: 3 },
     { id: 'marcus', name: 'Marcus', username: 'marcus_t',   img: 59, reactions: 2 },
     { id: 'ava',    name: 'Ava',    username: 'avaaa',      img: 25, reactions: 1 },
@@ -112,7 +113,7 @@ window.DEMO = (() => {
   const benToday = { back: 'photos/ben-bereal.jpg', front: null, caption: '' };
   const benPost = posts.find((p) => p.id === 'ben-6');
   if (benPost) Object.assign(benPost, benToday);
-  else posts.push({ id: 'ben-6', userId: 'ben', day: 6, minutes: notifTimes[6] + 4, late: 0, location: 'Midtown', ...benToday });
+  else posts.push({ id: 'ben-6', userId: 'ben', day: 6, minutes: notifTimes[6] + 4, late: 0, location: HOME_LOCATIONS.ben, ...benToday });
 
   // Override any post here, keyed by "<userId>-<dayIndex>" (Mon = 0),
   // e.g. 'chloe-6': { back: 'photos/chloe-back.jpg', front: 'photos/chloe-front.jpg', caption: 'hi' }
