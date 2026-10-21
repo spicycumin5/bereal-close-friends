@@ -15,9 +15,13 @@ Open `index.html` in a browser, or serve it:
 npx serve .
 ```
 
-## Deploy to Vercel
-- **CLI:** run `npx vercel` in this folder (choose "Other" as the framework, no build command), then `npx vercel --prod`.
-- **Git:** push this folder to a GitHub repo and import it at vercel.com/new. Leave the build settings empty.
+## Live demo
+https://bereal-close-friends.vercel.app
+
+## Deploys
+The Vercel project is connected to this GitHub repo: every push to `main` deploys to production automatically, and pushes to other branches get preview URLs. There is no build step.
+
+After editing `app.js`, `data.js` or `styles.css`, bump the `?v=` number on their links in `index.html` so browsers don't keep a stale cached copy.
 
 ## Presenting
 - The demo opens with the in-app Close Friends announcement, followed by the suggested-friends picker.
