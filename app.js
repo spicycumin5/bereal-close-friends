@@ -161,6 +161,8 @@
     const myBeReal = (p) => `<div class="mine">${dual(p)}<div class="mine-cap">My BeReal · ${fmtTime(p.minutes)}</div></div>`;
 
     function dual(p) {
+      // Posts without a separate front camera (inset already in the photo) can't be swapped.
+      if (!p.front) return `<div class="dual">${img(p.back, 'back', 'loading="lazy"')}</div>`;
       const sw = S.swapped.has(p.id);
       return `<div class="dual" data-action="swap" data-id="${p.id}">
         ${img(sw ? p.front : p.back, 'back', 'loading="lazy"')}
@@ -606,7 +608,7 @@
         return `<div class="slide s-post">
           ${img(p.back, 'kb')}
           <div class="shade"></div>
-          ${img(p.front, 'front')}
+          ${p.front ? img(p.front, 'front') : ''}
           <div class="daychip">${D.week.short[p.day]}</div>
           <div class="info">
             <div class="who-row">
@@ -707,7 +709,7 @@
       requestAnimationFrame(() => requestAnimationFrame(() => slide.classList.add('in')));
       old.forEach((o) => { o.classList.remove('in'); setTimeout(() => o.remove(), 400); });
       // Preload the next few photos so the reel never waits on the network.
-      R.slides.slice(i + 1, i + 5).forEach((s) => { if (s.post) [s.post.back, s.post.front].forEach((src) => { new Image().src = src; }); });
+      R.slides.slice(i + 1, i + 5).forEach((s) => { if (s.post) [s.post.back, s.post.front].filter(Boolean).forEach((src) => { new Image().src = src; }); });
     }
 
     function updateProgress() {

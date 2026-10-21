@@ -35,7 +35,8 @@ window.DEMO = (() => {
     { id: 'chloe',  name: 'Chloe',  username: 'chloe.dub',  img: 9,  reactions: 3 },
     { id: 'marcus', name: 'Marcus', username: 'marcus_t',   img: 59, reactions: 2 },
     { id: 'ava',    name: 'Ava',    username: 'avaaa',      img: 25, reactions: 1 },
-  ].map((f) => ({ ...f, avatar: realAvatar(f.id) || avatar(f.img) }));
+    { id: 'ben',    name: 'Ben',    username: 'ben3moore',  avatar: 'photos/ben-avatar.jpg', reactions: 4 },
+  ].map((f) => ({ ...f, avatar: f.avatar || realAvatar(f.id) || avatar(f.img) }));
 
   // Close-friend relationships at the start of the demo. Kyumin starts with none
   // (onboarding sets them up); Aimee has already sent Kyumin a request.
@@ -103,6 +104,13 @@ window.DEMO = (() => {
     else posts.push({ id: `${userId}-6`, userId, day: 6, minutes: notifTimes[6] + 1, late: 0, caption: '', location: pick(locations), ...photos });
   });
   posts.forEach((p) => { if (HOME_LOCATIONS[p.userId]) p.location = HOME_LOCATIONS[p.userId]; });
+
+  // Ben's photo came from a feed screenshot with the selfie inset already baked in,
+  // so it's a single image with no separate front camera (front: null).
+  const benToday = { back: 'photos/ben-bereal.jpg', front: null, caption: '' };
+  const benPost = posts.find((p) => p.id === 'ben-6');
+  if (benPost) Object.assign(benPost, benToday);
+  else posts.push({ id: 'ben-6', userId: 'ben', day: 6, minutes: notifTimes[6] + 4, late: 0, location: 'Midtown', ...benToday });
 
   // Override any post here, keyed by "<userId>-<dayIndex>" (Mon = 0),
   // e.g. 'chloe-6': { back: 'photos/chloe-back.jpg', front: 'photos/chloe-front.jpg', caption: 'hi' }
