@@ -251,6 +251,7 @@
           ${dual(p)}
           <span class="bonus" aria-hidden="true">${ICONS.plus}<span>5 more</span></span>
         </div>
+        <div class="mine-caption ${p.caption ? '' : 'empty'}">${p.caption || 'Add a caption…'}</div>
         <div class="mine-cap">My BeReal · ${fmtTime(p.minutes)}</div>
         <div class="mine-tools" aria-hidden="true">
           <span title="Send to">${ICONS.send}</span>
