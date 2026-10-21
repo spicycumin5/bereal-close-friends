@@ -1,12 +1,17 @@
 // All mock content for the demo lives here.
-// To use your own photos: drop files into /photos and replace the URLs below,
-// e.g. set a user's `avatar` to "photos/aimee.jpg", or override individual posts
-// in POST_OVERRIDES at the bottom (back = main camera, front = selfie inset).
+// Real photos live in /photos as <name>-back.jpg, <name>-front.jpg and <name>-avatar.jpg;
+// REAL_PHOTOS below says whose they are. Everyone else uses stock images. Individual
+// posts can also be overridden in POST_OVERRIDES at the bottom.
 window.DEMO = (() => {
   const avatar = (n) => `https://i.pravatar.cc/400?img=${n}`;
 
+  // userId -> photo file prefix. Their avatar becomes the face crop, and today's
+  // (Sunday's) BeReal uses their real back and front camera photos.
+  const REAL_PHOTOS = { me: 'kyumin', cherry: 'cherry', evan: 'evan', miriam: 'miriam', timmy: 'timmy', aimee: 'aimee' };
+  const realAvatar = (id) => REAL_PHOTOS[id] && `photos/${REAL_PHOTOS[id]}-avatar.jpg`;
+
   // The main phone belongs to "me". In two-phone mode, the second phone is `secondPhone`.
-  const me = { id: 'me', name: 'Kyumin', username: 'kyumin', avatar: avatar(68) };
+  const me = { id: 'me', name: 'Kyumin', username: 'kyumin', avatar: realAvatar('me') };
   const secondPhone = 'jordan';
 
   // `reactions` = RealMojis exchanged with Kyumin this month; drives onboarding suggestions.
@@ -20,7 +25,7 @@ window.DEMO = (() => {
     { id: 'chloe',  name: 'Chloe',  username: 'chloe.dub',  img: 9,  reactions: 3 },
     { id: 'marcus', name: 'Marcus', username: 'marcus_t',   img: 59, reactions: 2 },
     { id: 'ava',    name: 'Ava',    username: 'avaaa',      img: 25, reactions: 1 },
-  ].map((f) => ({ ...f, avatar: avatar(f.img) }));
+  ].map((f) => ({ ...f, avatar: realAvatar(f.id) || avatar(f.img) }));
 
   // Close-friend relationships at the start of the demo. Kyumin starts with none
   // (onboarding sets them up); Aimee has already sent Kyumin a request.
@@ -80,12 +85,24 @@ window.DEMO = (() => {
     }
   });
 
-  // Override any post here, keyed by "<userId>-<dayIndex>" (Mon = 0).
-  // e.g. 'aimee-6': { back: 'photos/aimee-sun-back.jpg', front: 'photos/aimee-sun-front.jpg', caption: 'hi' }
+  // Today's BeReal for everyone with real photos (created if the seed skipped their Sunday).
+  Object.entries(REAL_PHOTOS).forEach(([userId, file]) => {
+    const photos = { back: `photos/${file}-back.jpg`, front: `photos/${file}-front.jpg` };
+    const today = posts.find((p) => p.userId === userId && p.day === 6);
+    if (today) Object.assign(today, photos);
+    else posts.push({ id: `${userId}-6`, userId, day: 6, minutes: notifTimes[6] + 1, late: 0, caption: '', location: pick(locations), ...photos });
+  });
+
+  // Override any post here, keyed by "<userId>-<dayIndex>" (Mon = 0),
+  // e.g. 'chloe-6': { back: 'photos/chloe-back.jpg', front: 'photos/chloe-front.jpg', caption: 'hi' }
   // Sunday ("today") is tuned so the lock-screen demo has both on-time and late close friends.
   const POST_OVERRIDES = {
-    'evan-6':  { minutes: notifTimes[6] + 137, late: 137 },
-    'aimee-6': { minutes: notifTimes[6] + 32,  late: 32 },
+    'me-6':     { caption: 'monke distraked' },
+    'cherry-6': { caption: '' },
+    'evan-6':   { minutes: notifTimes[6] + 137, late: 137, caption: 'i need a haircut' },
+    'miriam-6': { caption: '' },
+    'timmy-6':  { caption: '' },
+    'aimee-6':  { minutes: notifTimes[6] + 32,  late: 32, caption: 'Claude chose me as the teams snack busboy this week 😋' },
   };
   posts.forEach((p) => Object.assign(p, POST_OVERRIDES[p.id]));
 

@@ -1,3 +1,6 @@
 .vercel
 .DS_Store
 Thumbs.db
+# Original screenshots (large); the cropped JPGs are what the demo uses
+photos/*.PNG
+photos/*.png

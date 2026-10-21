@@ -1,14 +1,11 @@
-# Your photos
+# Photos
 
-Drop your own images in this folder, then point `data.js` at them:
+Each person with real photos has three files, all cropped from BeReal screenshots:
 
-- **Avatars / selfies:** set a friend's `avatar` (e.g. `avatar: 'photos/aimee.jpg'`). By default the avatar is also used as that person's front-camera selfie.
-- **Individual BeReals:** add entries to `POST_OVERRIDES` keyed by `<userId>-<day>` (Mon = 0, Sun = 6):
+- `<name>-back.jpg`: main camera, 900x1200 (3:4)
+- `<name>-front.jpg`: selfie camera, 900x1200 (3:4)
+- `<name>-avatar.jpg`: square face crop used as their profile picture, 320x320
 
-```js
-const POST_OVERRIDES = {
-  'aimee-6': { back: 'photos/aimee-sun-back.jpg', front: 'photos/aimee-sun-front.jpg', caption: 'sunday reset' },
-};
-```
+`REAL_PHOTOS` at the top of `data.js` maps each person to their file prefix. Their profile picture becomes the face crop, and their Sunday ("today") BeReal uses the back and front photos. Everyone else uses stock images.
 
-Portrait 3:4 images (e.g. 900x1200) look best.
+To add someone, crop the 3:4 photo out of a screenshot (on an iPhone 1170x2532 screenshot, the photo sits at x 30-1140, y 333-1813), save the three files, and add them to `REAL_PHOTOS`. The original `.PNG` screenshots are git-ignored.
