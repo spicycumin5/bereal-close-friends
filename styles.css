@@ -296,6 +296,20 @@ img.broken { visibility: hidden; }
 .caption:empty { display: none; }
 .comment { padding: 6px 16px 0; font-size: 13.5px; color: var(--muted); }
 
+/* ---------- Sponsored post ---------- */
+.ad-media { display: block; }
+.ad-blur { position: absolute; inset: -30px; background-size: cover; background-position: center; filter: blur(28px) brightness(.55); }
+.ad-cover { position: absolute; left: 8%; right: 8%; top: 50%; width: 84%; transform: translateY(-50%); aspect-ratio: 1; object-fit: cover; border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, .6); }
+.ad-cta {
+  display: flex; align-items: center; gap: 10px; margin-top: 8px; padding: 10px 12px;
+  background: var(--card); border-radius: 14px; color: var(--text); text-decoration: none;
+}
+.ad-thumb { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex: none; }
+.ad-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ad-info b { font-size: 14px; font-weight: 700; }
+.ad-info span { font-size: 12px; color: var(--muted); }
+.ad-btn { flex: none; background: #fff; color: #000; font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 999px; }
+
 /* ---------- Recap card ---------- */
 .recap-card {
   display: block; position: relative; width: calc(100% - 24px); margin: 0 12px 24px; text-align: left;

@@ -28,6 +28,19 @@ window.DEMO = (() => {
   // Whose BeReal is pinned to the top of the My Friends feed.
   const feedFirst = 'ben';
 
+  // Sponsored post shown in the My Friends feed after `after` friends' BeReals.
+  const ad = {
+    after: 2,
+    brand: 'KYUMIN',
+    avatar: 'photos/kyumin-avatar.jpg',
+    cover: 'photos/today-ep-cover.jpg',
+    title: 'To:Day',
+    sub: 'EP · 5 songs · 2024',
+    caption: 'my EP To:Day is out now 🎧 go stream it',
+    cta: 'Listen on Spotify',
+    url: 'https://open.spotify.com/album/1Hn5BrcclmasBLt7oID1zz',
+  };
+
   // `reactions` = RealMojis exchanged with Kyumin this month; drives onboarding suggestions.
   const friends = [
     { id: 'aimee',  name: 'Aimee',  username: 'aimeeebeling', img: 5,  reactions: 9 },
@@ -121,5 +134,5 @@ window.DEMO = (() => {
   };
   posts.forEach((p) => Object.assign(p, POST_OVERRIDES[p.id]));
 
-  return { me, friends, acceptingPhone, feedFirst, relationships, suggested, week, notifTimes, posts, today: 6 };
+  return { me, friends, acceptingPhone, feedFirst, ad, relationships, suggested, week, notifTimes, posts, today: 6 };
 })();

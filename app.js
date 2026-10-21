@@ -229,7 +229,7 @@
         <div class="scroll has-tabbar">
           ${mine ? myBeReal(mine) : ''}
           ${S.tab === 'close' ? recapCard() : ''}
-          ${list.length ? list.map(postView).join('') : emptyFeed()}
+          ${list.length ? list.map((p, i) => postView(p) + (S.tab === 'all' && i === D.ad.after - 1 ? adView() : '')).join('') : emptyFeed()}
         </div>
         ${tabBar()}`;
     }
@@ -291,6 +291,35 @@
         </div>
         <div class="caption">${p.caption}</div>
         <div class="comment">Add a comment…</div>
+      </article>`;
+    }
+
+    // A sponsored post styled like a BeReal: cover art as the main camera, the artist
+    // in the inset, and a CTA bar under the photo that opens the album.
+    function adView() {
+      const a = D.ad;
+      return `<article class="post ad">
+        <div class="post-head">
+          ${img(a.avatar, 'avatar')}
+          <div class="who">
+            <div class="name">${a.brand}</div>
+            <div class="meta"><span class="loc">Sponsored</span></div>
+          </div>
+          <span class="more">•••</span>
+        </div>
+        <div class="post-media">
+          <a class="dual ad-media" href="${a.url}" target="_blank" rel="noopener">
+            <span class="ad-blur" style="background-image:url('${a.cover}')"></span>
+            ${img(a.cover, 'ad-cover')}
+            ${img(a.avatar, 'front')}
+          </a>
+          <a class="ad-cta" href="${a.url}" target="_blank" rel="noopener">
+            <img class="ad-thumb" src="${a.cover}" alt="">
+            <span class="ad-info"><b>${a.title}</b><span>${a.sub}</span></span>
+            <span class="ad-btn">${a.cta}</span>
+          </a>
+        </div>
+        <div class="caption">${a.caption}</div>
       </article>`;
     }
 
