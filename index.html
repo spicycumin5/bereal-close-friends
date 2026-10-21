@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>BeReal Close Friends</title>
+  <meta name="description" content="Concept demo: Close Friends tab and a weekly recap reel for BeReal.">
+  <meta name="theme-color" content="#000000">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=9">
+</head>
+<body>
+  <main class="stage">
+    <aside class="guide">
+      <div class="guide-kicker">Concept demo</div>
+      <h1>BeReal.<br><span class="green">Close Friends</span></h1>
+      <p class="guide-lede">Keep the whole friend list, but give the people who matter most their own lens on the feed, and a week together worth rewatching.</p>
+
+      <div class="mode" role="group" aria-label="Phones shown">
+        <button class="active" data-demo="phones1">One phone</button>
+        <button data-demo="phones2">Two phones</button>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div>
+            <h2>Onboarding</h2>
+            <p>An in-app intro, then suggested close friends based on who you RealMoji the most.</p>
+            <button class="guide-btn" data-demo="onboard">Replay intro →</button>
+            <button class="guide-btn" data-demo="skip">Skip it →</button>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div>
+            <h2>Mutual requests</h2>
+            <p>You send a request and they accept. In two-phone mode, send one to Jordan and it lands on their phone.</p>
+            <button class="guide-btn" data-demo="friends">Open friends →</button>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div>
+            <h2>The Close Friends tab</h2>
+            <p>Not new posts, just a filter on the feed you already have.</p>
+            <button class="guide-btn" data-demo="closeTab">Show the tab →</button>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div>
+            <h2>Phone off? Still in the loop</h2>
+            <p>The lock screen tells you when close friends post: right at BeReal time, and again when someone posts late.</p>
+            <button class="guide-btn" data-demo="lockOnTime">BeReal time →</button>
+            <button class="guide-btn" data-demo="lockLate">Later that day →</button>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div>
+            <h2>Your week, every Sunday</h2>
+            <p>A chronological reel of the circle's BeReals, day by day.</p>
+            <button class="guide-btn" data-demo="notify">Send Sunday notification →</button>
+            <button class="guide-btn" data-demo="reel">Play recap →</button>
+          </div>
+        </li>
+      </ol>
+
+      <button class="guide-reset" data-demo="reset">↺ Reset demo</button>
+      <p class="guide-foot">Unofficial concept. Not affiliated with BeReal. Tap a photo to swap cameras; in the recap, tap to skip and hold to pause.</p>
+    </aside>
+
+    <div class="phones" id="phones"></div>
+  </main>
+
+  <!-- Bump ?v= after editing so browsers never run a stale cached copy. -->
+  <script src="data.js?v=9"></script>
+  <script src="app.js?v=9"></script>
+</body>
+</html>
