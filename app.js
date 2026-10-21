@@ -175,7 +175,7 @@
           ${img(u.avatar, 'avatar')}
           <div class="who">
             <div class="name">${u.name}${isClose(u.id) ? `<span class="cf-badge" title="Close friend">${ICONS.star}</span>` : ''}</div>
-            <div class="meta">${p.location} · ${p.late ? lateLabel(p) : fmtTime(p.minutes)}</div>
+            <div class="meta"><span class="loc">${p.location}</span><span class="when">· ${p.late ? lateLabel(p) : fmtTime(p.minutes)}</span></div>
           </div>
           <span class="more">•••</span>
         </div>

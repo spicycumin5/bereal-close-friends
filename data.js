@@ -10,6 +10,15 @@ window.DEMO = (() => {
   // days use their real selfie in the front-camera inset.
   const REAL_PHOTOS = { me: 'kyumin', cherry: 'cherry', evan: 'evan', miriam: 'miriam', timmy: 'timmy', aimee: 'aimee' };
   const realAvatar = (id) => REAL_PHOTOS[id] && `photos/${REAL_PHOTOS[id]}-avatar.jpg`;
+  // Real locations, used on all of that person's posts. Everyone else gets a random one.
+  const HOME_LOCATIONS = {
+    me: 'South San Francisco, Westborough',
+    cherry: 'Malibu, United States',
+    evan: 'Los Angeles, North University Park',
+    miriam: 'Irvine, University Town Center',
+    timmy: 'Los Angeles, South Park',
+    aimee: 'Manhattan, New York',
+  };
 
   // The main phone belongs to "me". In two-phone mode, the second phone is `secondPhone`.
   const me = { id: 'me', name: 'Kyumin', username: 'kyumin', avatar: realAvatar('me') };
@@ -93,6 +102,7 @@ window.DEMO = (() => {
     if (today) Object.assign(today, photos);
     else posts.push({ id: `${userId}-6`, userId, day: 6, minutes: notifTimes[6] + 1, late: 0, caption: '', location: pick(locations), ...photos });
   });
+  posts.forEach((p) => { if (HOME_LOCATIONS[p.userId]) p.location = HOME_LOCATIONS[p.userId]; });
 
   // Override any post here, keyed by "<userId>-<dayIndex>" (Mon = 0),
   // e.g. 'chloe-6': { back: 'photos/chloe-back.jpg', front: 'photos/chloe-front.jpg', caption: 'hi' }
