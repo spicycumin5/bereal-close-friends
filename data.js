@@ -22,7 +22,7 @@ window.DEMO = (() => {
 
   // The main phone belongs to "me". In two-phone mode, the second phone is `secondPhone`.
   const me = { id: 'me', name: 'Kyumin', username: 'kyumin', avatar: realAvatar('me') };
-  const secondPhone = 'jordan';
+  const secondPhone = 'ben';
   // Whose phone slides in to accept Kyumin's request in one-phone mode (if they were sent one).
   const acceptingPhone = 'evan';
 
@@ -44,9 +44,9 @@ window.DEMO = (() => {
   // (onboarding sets them up); Timmy has already sent Kyumin a request.
   const relationships = [
     { a: 'timmy',  b: 'me',     state: 'pending', from: 'timmy' },
-    { a: 'jordan', b: 'chloe',  state: 'close' },
-    { a: 'jordan', b: 'marcus', state: 'close' },
-    { a: 'jordan', b: 'ava',    state: 'close' },
+    { a: 'ben',    b: 'chloe',  state: 'close' },
+    { a: 'ben',    b: 'marcus', state: 'close' },
+    { a: 'ben',    b: 'ava',    state: 'close' },
   ];
   // Pre-checked in the onboarding picker.
   const suggested = ['cherry', 'evan', 'miriam', 'timmy', 'aimee'];

@@ -260,7 +260,7 @@
 
     // ---------- Onboarding ----------
     function introSheet() {
-      const faces = [...D.suggested, 'jordan'].filter((id) => id !== userId).slice(0, 6);
+      const faces = [...D.suggested, 'ben'].filter((id) => id !== userId).slice(0, 6);
       const orbit = faces.map((id, i) => {
         const a = (i / faces.length) * Math.PI * 2 - Math.PI / 2;
         return img(users[id].avatar, 'orb', `style="left:${50 + 40 * Math.cos(a)}%;top:${50 + 40 * Math.sin(a)}%"`);
