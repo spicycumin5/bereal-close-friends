@@ -69,7 +69,10 @@
       later(() => { if (store.status(to, from) === 'incoming') acceptRequest(to, from); }, 1400 + Math.random() * 1800);
     }
   }
-  const acceptRequest = (by, other) => store.set(by, other, { state: 'close' }, { type: 'accept', from: by, to: other });
+  const acceptRequest = (by, other) => {
+    if (store.status(by, other) !== 'incoming') return; // already accepted (or withdrawn)
+    store.set(by, other, { state: 'close' }, { type: 'accept', from: by, to: other });
+  };
   const declineRequest = (by, other) => store.set(by, other, null, { type: 'decline', from: by, to: other });
   const removeClose = (by, other) => store.set(by, other, null, { type: 'remove', from: by, to: other });
 
@@ -176,7 +179,7 @@
         <div class="post-head">
           ${img(u.avatar, 'avatar')}
           <div class="who">
-            <div class="name">${u.name}${isClose(u.id) ? `<span class="cf-badge" title="Close friend">${ICONS.star}</span>` : ''}</div>
+            <div class="name">${u.username}${isClose(u.id) ? `<span class="cf-badge" title="Close friend">${ICONS.star}</span>` : ''}</div>
             <div class="meta"><span class="loc">${p.location}</span><span class="when">· ${p.late ? lateLabel(p) : fmtTime(p.minutes)}</span></div>
           </div>
           <span class="more">•••</span>
@@ -402,8 +405,10 @@
         .slice(0, 5);
       let seq;
       if (scene === 'late') {
-        // Late posts are summarised in a single notification.
-        seq = posts.length ? [lateSummary(posts)] : [];
+        // The first late friend gets their own notification; when more come in, it
+        // collapses into one grouped "N close friends posted late" notification.
+        seq = posts.length ? [{ ...lateSingle(posts[0]), group: 'late' }] : [];
+        if (posts.length > 1) seq.push({ ...lateSummary(posts), group: 'late' });
       } else {
         seq = [
           { title: '⚠️ Time to BeReal. ⚠️', body: '2 min left to capture a BeReal and see what your friends are up to.', minutes: D.notifTimes[D.today], go: 'close' },
@@ -425,11 +430,13 @@
       }, start + i * 1800));
     }
 
+    const lateSingle = (p) => ({
+      title: `★ ${users[p.userId].name} posted late`, body: `${lateLabel(p)}, but they made it. Tap to see their BeReal.`,
+      avatar: p.userId, minutes: p.minutes, post: p.id, go: 'close',
+    });
+
     function lateSummary(posts) {
       const last = posts[posts.length - 1];
-      if (posts.length === 1) {
-        return { title: `★ ${users[last.userId].name} posted late`, body: `${lateLabel(last)}, but they made it. Tap to see their BeReal.`, avatar: last.userId, minutes: last.minutes, post: last.id, go: 'close' };
-      }
       const parts = posts.map((p) => `${users[p.userId].name} (${lateLabel(p).replace(' late', '')})`);
       const list = `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
       return {
@@ -438,9 +445,9 @@
       };
     }
 
-    // Adds a notification to a lit lock screen in place, sliding older ones down,
-    // instead of re-rendering the whole screen.
-    function addLockNotif(n) {
+    // Updates the notification list on a lit lock screen in place (older ones stay on
+    // top, new ones slide in below) instead of re-rendering the whole screen.
+    function addLockNotif() {
       const list = $('.lock-notifs', app);
       const before = new Map([...list.children].map((c) => [c.dataset.nid, c.getBoundingClientRect().top]));
       list.innerHTML = S.lockNotifs.map((x, i) => notifCard(x, i)).join('');
@@ -451,19 +458,24 @@
           c.animate([{ transform: `translateY(${top - c.getBoundingClientRect().top}px)` }, { transform: 'none' }], { duration: 450, easing: 'cubic-bezier(.2, .9, .3, 1)' });
         }
       });
+      list.scrollTo({ top: list.scrollHeight, behavior: 'smooth' });
       S.lockNotifs.forEach((x) => { x.fresh = false; });
     }
 
     // ---------- Notifications ----------
     function notify(n) {
       if (S.locked) {
-        S.lockNotifs.unshift({ ...n, fresh: true, nid: ++notifSeq });
+        // Oldest stays on top. A notification in the same group replaces the earlier one in place.
+        const entry = { ...n, fresh: true, nid: ++notifSeq };
+        const same = n.group ? S.lockNotifs.findIndex((x) => x.group === n.group) : -1;
+        if (same >= 0) S.lockNotifs[same] = entry;
+        else S.lockNotifs.push(entry);
         if (S.off) {
           // First notification wakes the screen.
           Object.assign(S, { off: false, waking: true });
           render();
         } else {
-          addLockNotif(n);
+          addLockNotif();
         }
         return;
       }
@@ -766,9 +778,9 @@
     // Plays a scripted "tap the request notification, then tap Accept" on this phone.
     function autoAccept(from, onAccepted) {
       const tap = (el, then) => {
-        if (!el) return;
+        if (!el || !el.isConnected) return; // this phone has already slid away
         el.classList.add('tapping');
-        later(() => { el.classList.remove('tapping'); then(el); }, 450);
+        later(() => { el.classList.remove('tapping'); if (el.isConnected) then(el); }, 450);
       };
       later(() => tap($('.push', screenEl), (el) => el.click()), 1600);
       later(() => tap($(`[data-action="accept"][data-id="${from}"]`, app), (el) => { el.click(); onAccepted?.(); }), 3600);
