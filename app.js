@@ -783,7 +783,7 @@
       el.className = 'reel';
       el.innerHTML = `
         <div class="reel-stage"></div>
-        <div class="reel-progress">${days.map(() => '<div class="seg"><i></i></div>').join('')}</div>
+        <div class="reel-progress">${[...days, 'end'].map(() => '<div class="seg"><i></i></div>').join('')}</div>
         <div class="reel-top">
           <div class="reel-label">${ICONS.star} Close Friends · ${D.week.label}</div>
           <button class="reel-close" data-reel="close" aria-label="Close">${ICONS.close}</button>
@@ -862,7 +862,12 @@
         }
         segs[k].style.width = `${frac * 100}%`;
       });
+      // The last segment belongs to the "That was your week" screen: it fills once,
+      // then the recap holds there.
+      const endFrac = cur.type === 'end' ? Math.min(R.elapsed / END_FILL, 1) : 0;
+      segs[R.days.length].style.width = `${endFrac * 100}%`;
     }
+    const END_FILL = 2000;
 
     function bindReel(el) {
       const stage = $('.reel-stage', el);
