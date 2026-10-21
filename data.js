@@ -25,6 +25,8 @@ window.DEMO = (() => {
   const me = { id: 'me', name: 'Kyumin', username: 'spicy_cumin', avatar: realAvatar('me') };
   // Whose phone slides in to accept Kyumin's request (if they were sent one).
   const acceptingPhone = 'evan';
+  // Whose BeReal is pinned to the top of the My Friends feed.
+  const feedFirst = 'ben';
 
   // `reactions` = RealMojis exchanged with Kyumin this month; drives onboarding suggestions.
   const friends = [
@@ -119,5 +121,5 @@ window.DEMO = (() => {
   };
   posts.forEach((p) => Object.assign(p, POST_OVERRIDES[p.id]));
 
-  return { me, friends, acceptingPhone, relationships, suggested, week, notifTimes, posts, today: 6 };
+  return { me, friends, acceptingPhone, feedFirst, relationships, suggested, week, notifTimes, posts, today: 6 };
 })();
