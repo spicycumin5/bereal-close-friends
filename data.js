@@ -5,8 +5,9 @@
 window.DEMO = (() => {
   const avatar = (n) => `https://i.pravatar.cc/400?img=${n}`;
 
-  // userId -> photo file prefix. Their avatar becomes the face crop, and today's
-  // (Sunday's) BeReal uses their real back and front camera photos.
+  // userId -> photo file prefix. Their avatar is their real BeReal profile picture,
+  // today's (Sunday's) BeReal uses their real back and front camera photos, and other
+  // days use their real selfie in the front-camera inset.
   const REAL_PHOTOS = { me: 'kyumin', cherry: 'cherry', evan: 'evan', miriam: 'miriam', timmy: 'timmy', aimee: 'aimee' };
   const realAvatar = (id) => REAL_PHOTOS[id] && `photos/${REAL_PHOTOS[id]}-avatar.jpg`;
 
@@ -78,7 +79,7 @@ window.DEMO = (() => {
         minutes: Math.min(notifTimes[d] + delay, 23 * 60 + 59),
         late: late ? delay : 0,
         back: `https://picsum.photos/seed/bcf-${u.id}-${d}/600/800`,
-        front: u.avatar,
+        front: REAL_PHOTOS[u.id] ? `photos/${REAL_PHOTOS[u.id]}-front.jpg` : u.avatar,
         caption: pick(captions),
         location: pick(locations),
       });

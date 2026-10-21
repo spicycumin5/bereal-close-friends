@@ -186,7 +186,7 @@ img.broken { visibility: hidden; }
 .notif.fresh { animation: notifIn .5s cubic-bezier(.2, .9, .3, 1.15); }
 @keyframes notifIn { from { opacity: 0; transform: translateY(-14px) scale(.96); } }
 .notif-body { flex: 1; min-width: 0; }
-.notif-av { flex: none; width: 34px; height: 34px; border-radius: 8px; object-fit: cover; background: #333; }
+.notif-av { flex: none; width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: #333; }
 .notif-stack { flex: none; display: flex; }
 .notif-stack img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; background: #333; border: 2px solid #2c2c2e; margin-left: -9px; }
 .notif-stack img:first-child { margin-left: 0; }
