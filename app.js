@@ -35,6 +35,13 @@
     return `${h % 12 || 12}:${String(m % 60).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
   };
   const clockTime = (m) => `${Math.floor(m / 60) % 12 || 12}:${String(m % 60).padStart(2, '0')}`;
+  // Feed timestamp, relative to D.now: "23 min ago", "1 hour ago", "6 hours ago".
+  const agoLabel = (p) => {
+    const m = Math.max(D.now - p.minutes, 0);
+    if (m < 60) return m < 1 ? 'just now' : `${m} min ago`;
+    const h = Math.floor(m / 60);
+    return `${h} hour${h === 1 ? '' : 's'} ago`;
+  };
   const lateLabel = (p) => (p.late >= 60 ? `${Math.floor(p.late / 60)}h late` : `${p.late}m late`);
   const img = (src, cls = '', extra = '') => `<img class="${cls}" src="${src}" alt="" ${extra} onerror="this.classList.add('broken')">`;
 
@@ -277,7 +284,7 @@
           ${img(u.avatar, 'avatar')}
           <div class="who">
             <div class="name">${u.username}${isClose(u.id) ? `<span class="cf-badge" title="Close friend">${ICONS.star}</span>` : ''}</div>
-            <div class="meta"><span class="loc">${p.location}</span><span class="when">· ${p.late ? lateLabel(p) : fmtTime(p.minutes)}</span></div>
+            <div class="meta"><span class="loc">${p.location}</span><span class="when">· ${agoLabel(p)}</span></div>
           </div>
           <span class="more">•••</span>
         </div>

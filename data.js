@@ -8,7 +8,7 @@ window.DEMO = (() => {
   // userId -> photo file prefix. Their avatar is their real BeReal profile picture,
   // today's (Sunday's) BeReal uses their real back and front camera photos, and other
   // days use their real selfie in the front-camera inset.
-  const REAL_PHOTOS = { me: 'kyumin', cherry: 'cherry', evan: 'evan', miriam: 'miriam', timmy: 'timmy', aimee: 'aimee', ben: 'ben' };
+  const REAL_PHOTOS = { me: 'kyumin', cherry: 'cherry', evan: 'evan', miriam: 'miriam', timmy: 'timmy', aimee: 'aimee', ben: 'ben', seven: 'seven' };
   const realAvatar = (id) => REAL_PHOTOS[id] && `photos/${REAL_PHOTOS[id]}-avatar.jpg`;
   // Real locations, used on all of that person's posts. Everyone else gets a random one.
   const HOME_LOCATIONS = {
@@ -19,6 +19,7 @@ window.DEMO = (() => {
     timmy: 'Los Angeles, South Park',
     aimee: 'Manhattan, New York',
     ben: 'Los Angeles, Downtown',
+    seven: 'Setagaya, Komazawa',
   };
 
   // The main phone belongs to "me".
@@ -53,6 +54,7 @@ window.DEMO = (() => {
     { id: 'marcus', name: 'Marcus', username: 'marcus_t',   img: 59, reactions: 2 },
     { id: 'ava',    name: 'Ava',    username: 'avaaa',      img: 25, reactions: 1 },
     { id: 'ben',    name: 'Ben',    username: 'ben3moore',  reactions: 4 },
+    { id: 'seven',  name: 'Seven',  username: 'victhor_seven', reactions: 2 },
   ].map((f) => ({ ...f, avatar: f.avatar || realAvatar(f.id) || avatar(f.img) }));
 
   // Close-friend relationships at the start of the demo. Kyumin starts with none
@@ -72,6 +74,8 @@ window.DEMO = (() => {
 
   // The daily "⚠️ Time to BeReal" notification, in minutes after midnight.
   const notifTimes = [12 * 60 + 41, 16 * 60 + 3, 10 * 60 + 22, 19 * 60 + 47, 14 * 60 + 15, 21 * 60 + 8, 13 * 60 + 36];
+  // The current time on Sunday; feed timestamps read "<n> hours ago" relative to it.
+  const now = 20 * 60;
 
   const captions = [
     'golden hour hits different', 'library grind 📚', 'pasta night 🍝', 'why is it always during class',
@@ -130,9 +134,10 @@ window.DEMO = (() => {
     'miriam-6': { caption: '' },
     'timmy-6':  { minutes: notifTimes[6] + 360, late: 360, caption: '' },
     'ben-6':    { minutes: 19 * 60 + 36, late: 0, caption: '' },
+    'seven-6':  { minutes: now - 23, late: now - 23 - notifTimes[6], caption: 'お分かりいただけただろうか' },
     'aimee-6':  { minutes: notifTimes[6] + 32,  late: 32, caption: 'Claude chose me as the teams snack busboy this week 😋' },
   };
   posts.forEach((p) => Object.assign(p, POST_OVERRIDES[p.id]));
 
-  return { me, friends, acceptingPhone, feedFirst, ad, relationships, suggested, week, notifTimes, posts, today: 6 };
+  return { me, friends, acceptingPhone, feedFirst, ad, relationships, suggested, week, notifTimes, now, posts, today: 6 };
 })();
