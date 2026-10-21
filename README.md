@@ -28,7 +28,7 @@ After editing `app.js`, `data.js` or `styles.css`, bump the `?v=` number on thei
 - On desktop, the left panel has shortcuts for each step: replay or skip onboarding, open Friends, jump to the Close Friends tab, turn the phone off (lock-screen notifications as close friends post on time or late), send the Sunday push notification, play the recap, and reset.
 - When Kyumin sends a close friend request, the recipient's phone (Evan's after onboarding) slides in, receives the notification, accepts it, and slides away. Other friends accept automatically after a moment.
 - Tap a photo to swap front and back cameras.
-- Recap: tap the right side to skip, the left side to go back, hold to pause. Keyboard: ← → Space Esc.
+- Recap: tap the right side to jump to the next day, the left side to go back a day, hold to pause. Keyboard: ← → Space Esc.
 - On a phone, the frame is dropped and the demo fills the screen.
 
 ## Your own photos

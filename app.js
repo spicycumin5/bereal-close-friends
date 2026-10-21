@@ -818,6 +818,19 @@
       R.raf = requestAnimationFrame(tick);
     }
 
+    // Taps move a whole day: forward to the next day's title card (or the end screen),
+    // back to the start of this day, or to the previous day if already at its start.
+    function nextDay() {
+      const i = R.slides.findIndex((s, j) => j > R.i && (s.type === 'day' || s.type === 'end'));
+      go(i < 0 ? R.slides.length - 1 : i);
+    }
+    function prevDay() {
+      const starts = R.slides.map((s, j) => (s.type === 'day' || s.type === 'title' ? j : -1)).filter((j) => j >= 0);
+      const current = starts.filter((j) => j <= R.i).pop() ?? 0;
+      const target = R.i === current ? starts[starts.indexOf(current) - 1] ?? 0 : current;
+      if (target === R.i) R.elapsed = 0; else go(target);
+    }
+
     function go(i) {
       i = Math.max(0, Math.min(R.slides.length - 1, i));
       if (i === R.i) { R.elapsed = 0; return; }
@@ -867,7 +880,7 @@
         if (held) { R.paused = false; el.classList.remove('paused'); return; }
         if (R.slides[R.i].type === 'end') return;
         const rect = stage.getBoundingClientRect();
-        go(e.clientX - rect.left < rect.width * 0.3 ? R.i - 1 : R.i + 1);
+        if (e.clientX - rect.left < rect.width * 0.3) prevDay(); else nextDay();
       });
       stage.addEventListener('pointerleave', () => {
         clearTimeout(holdTimer);
@@ -903,8 +916,8 @@
       closeReel,
       reelKey(key) {
         if (!R) return false;
-        if (key === 'ArrowRight') go(R.i + 1);
-        else if (key === 'ArrowLeft') go(R.i - 1);
+        if (key === 'ArrowRight') nextDay();
+        else if (key === 'ArrowLeft') prevDay();
         else if (key === 'Escape') closeReel();
         else if (key === ' ') { R.paused = !R.paused; R.el.classList.toggle('paused', R.paused); }
         return true;
