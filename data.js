@@ -22,7 +22,7 @@ window.DEMO = (() => {
   };
 
   // The main phone belongs to "me". In two-phone mode, the second phone is `secondPhone`.
-  const me = { id: 'me', name: 'Kyumin', username: 'spicycumin', avatar: realAvatar('me') };
+  const me = { id: 'me', name: 'Kyumin', username: 'spicy_cumin', avatar: realAvatar('me') };
   const secondPhone = 'ben';
   // Whose phone slides in to accept Kyumin's request in one-phone mode (if they were sent one).
   const acceptingPhone = 'evan';
