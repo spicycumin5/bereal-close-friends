@@ -301,33 +301,25 @@
       </article>`;
     }
 
-    // A sponsored post styled like a BeReal: cover art as the main camera, the artist
-    // in the inset, and a CTA bar under the photo that opens the album.
+    // A sponsored card between posts. Deliberately not shaped like a BeReal (no 3:4 photo,
+    // no camera inset, no reactions) so it reads as an ad, not a friend's post.
     function adView() {
       const a = D.ad;
-      return `<article class="post ad">
-        <div class="post-head">
-          ${img(a.avatar, 'avatar')}
-          <div class="who">
-            <div class="name">${a.brand}</div>
-            <div class="meta"><span class="loc">Sponsored</span></div>
-          </div>
-          <span class="more">•••</span>
-        </div>
-        <div class="post-media">
-          <a class="dual ad-media" href="${a.url}" target="_blank" rel="noopener">
-            <span class="ad-blur" style="background-image:url('${a.cover}')"></span>
+      return `<aside class="ad">
+        <div class="ad-label"><span>Sponsored</span><span class="more">•••</span></div>
+        <a class="ad-card" href="${a.url}" target="_blank" rel="noopener">
+          <div class="ad-main">
             ${img(a.cover, 'ad-cover')}
-            ${img(a.avatar, 'front')}
-          </a>
-          <a class="ad-cta" href="${a.url}" target="_blank" rel="noopener">
-            <img class="ad-thumb" src="${a.cover}" alt="">
-            <span class="ad-info"><b>${a.title}</b><span>${a.sub}</span></span>
-            <span class="ad-btn">${a.cta}</span>
-          </a>
-        </div>
-        <div class="caption">${a.caption}</div>
-      </article>`;
+            <div class="ad-info">
+              <div class="ad-kicker">New release</div>
+              <div class="ad-title">${a.title}</div>
+              <div class="ad-sub">${a.brand} · ${a.sub}</div>
+              <div class="ad-tag">${a.caption}</div>
+            </div>
+          </div>
+          <span class="ad-btn">${a.cta}</span>
+        </a>
+      </aside>`;
     }
 
     function recapCard() {

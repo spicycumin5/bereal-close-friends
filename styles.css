@@ -296,19 +296,18 @@ img.broken { visibility: hidden; }
 .caption:empty { display: none; }
 .comment { padding: 6px 16px 0; font-size: 13.5px; color: var(--muted); }
 
-/* ---------- Sponsored post ---------- */
-.ad-media { display: block; }
-.ad-blur { position: absolute; inset: -30px; background-size: cover; background-position: center; filter: blur(28px) brightness(.55); }
-.ad-cover { position: absolute; left: 8%; right: 8%; top: 50%; width: 84%; transform: translateY(-50%); aspect-ratio: 1; object-fit: cover; border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, .6); }
-.ad-cta {
-  display: flex; align-items: center; gap: 10px; margin-top: 8px; padding: 10px 12px;
-  background: var(--card); border-radius: 14px; color: var(--text); text-decoration: none;
-}
-.ad-thumb { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex: none; }
-.ad-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.ad-info b { font-size: 14px; font-weight: 700; }
-.ad-info span { font-size: 12px; color: var(--muted); }
-.ad-btn { flex: none; background: #fff; color: #000; font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 999px; }
+/* ---------- Sponsored card ---------- */
+.ad { margin: 0 12px 26px; }
+.ad-label { display: flex; justify-content: space-between; align-items: center; padding: 0 4px 6px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.ad-card { display: block; padding: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; color: var(--text); text-decoration: none; }
+.ad-main { display: flex; gap: 12px; align-items: center; }
+.ad-cover { width: 96px; height: 96px; border-radius: 8px; object-fit: cover; flex: none; }
+.ad-info { min-width: 0; }
+.ad-kicker { font-size: 11px; font-weight: 700; color: var(--muted); }
+.ad-title { font-size: 19px; font-weight: 800; margin-top: 2px; }
+.ad-sub { font-size: 12.5px; color: var(--muted); margin-top: 1px; }
+.ad-tag { font-size: 13px; margin-top: 6px; }
+.ad-btn { display: block; margin-top: 12px; padding: 10px; border-radius: 999px; background: #1db954; color: #000; font-size: 14px; font-weight: 700; text-align: center; }
 
 /* ---------- Recap card ---------- */
 .recap-card {

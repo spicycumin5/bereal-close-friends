@@ -29,11 +29,10 @@ window.DEMO = (() => {
   // Whose BeReal is pinned to the top of the My Friends feed.
   const feedFirst = 'ben';
 
-  // Sponsored post shown in the My Friends feed after `after` friends' BeReals.
+  // Sponsored card shown in the My Friends feed after `after` friends' BeReals.
   const ad = {
     after: 2,
     brand: 'KYUMIN',
-    avatar: 'photos/kyumin-avatar.jpg',
     cover: 'photos/today-ep-cover.jpg',
     title: 'To:Day',
     sub: 'EP · 5 songs · 2024',
