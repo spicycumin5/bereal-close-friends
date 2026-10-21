@@ -305,19 +305,19 @@
     // no camera inset, no reactions) so it reads as an ad, not a friend's post.
     function adView() {
       const a = D.ad;
-      return `<aside class="ad">
-        <div class="ad-label"><span>Sponsored</span><span class="more">•••</span></div>
-        <a class="ad-card" href="${a.url}" target="_blank" rel="noopener">
-          <div class="ad-main">
-            ${img(a.cover, 'ad-cover')}
-            <div class="ad-info">
-              <div class="ad-kicker">New release</div>
-              <div class="ad-title">${a.title}</div>
-              <div class="ad-sub">${a.brand} · ${a.sub}</div>
-              <div class="ad-tag">${a.caption}</div>
+      return `<aside class="release">
+        <div class="rel-label"><span>Sponsored</span><span class="more">•••</span></div>
+        <a class="rel-card" href="${a.url}" target="_blank" rel="noopener">
+          <div class="rel-main">
+            ${img(a.cover, 'rel-cover')}
+            <div class="rel-info">
+              <div class="rel-kicker">New release</div>
+              <div class="rel-title">${a.title}</div>
+              <div class="rel-sub">${a.brand} · ${a.sub}</div>
+              <div class="rel-tag">${a.caption}</div>
             </div>
           </div>
-          <span class="ad-btn">${a.cta}</span>
+          <span class="rel-btn">${a.cta}</span>
         </a>
       </aside>`;
     }
