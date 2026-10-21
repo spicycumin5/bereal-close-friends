@@ -11,6 +11,10 @@
     plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
     check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
     mutual: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg>',
+    home: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2 3 10.4V20a1 1 0 0 0 1 1h5.5v-6h5v6H20a1 1 0 0 0 1-1v-9.6z"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 3 10.5 13.5M21 3l-6.5 18-4-7.5L3 9.5z"/></svg>',
+    camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 8h3.2l1.6-2.5h6.4L16.8 8H20a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.4"/></svg>',
+    memories: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9.5h18M8 3v3M16 3v3"/><path d="M7.5 13.5h2M11 13.5h2M14.5 13.5h2M7.5 17h2M11 17h2" stroke-width="2.2"/></svg>',
     film: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg>',
   };
   const STATUS_ICONS = `
@@ -114,8 +118,12 @@
     function render() {
       const key = S.locked ? 'lock' : S.onboard && S.onboard !== 'intro' ? `ob-${S.onboard}` : S.screen + S.tab + (S.onboard || '');
       const entering = key !== S.viewKey;
+      const anim = entering ? S.anim : null;
+      S.anim = null;
+      const oldView = app.firstElementChild;
       const prev = $('.scroll', app);
-      const keepScroll = !entering && prev ? prev.scrollTop : 0;
+      const oldScroll = prev ? prev.scrollTop : 0;
+      const keepScroll = !entering ? oldScroll : 0;
 
       let html;
       if (S.locked) html = lockView();
@@ -123,7 +131,7 @@
       else if (S.onboard === 'sent') html = sentView();
       else html = (S.screen === 'feed' ? feedView() : friendsView()) + (S.onboard === 'intro' ? introSheet() : '');
 
-      app.innerHTML = `<div class="view ${entering ? 'enter' : ''}">${html}</div>`;
+      app.innerHTML = `<div class="view ${entering && !anim ? 'enter' : ''}">${html}</div>`;
       screenEl.classList.toggle('locked', S.locked);
       screenEl.classList.toggle('off', S.locked && S.off);
 
@@ -134,9 +142,61 @@
         if (next && target) next.scrollTop = target.offsetTop - next.offsetTop - 8;
         S.scrollTo = null;
       }
+      if (anim && oldView) transition(anim, oldView, prev, oldScroll);
+      placeTabIndicator();
       S.viewKey = key;
       S.highlight = null;
       S.lockNotifs.forEach((n) => { n.fresh = false; });
+    }
+
+    // BeReal-style transitions. 'left'/'right': only the feed slides sideways under a
+    // fixed header (switching tabs). 'up': the new screen slides up over the old one.
+    // 'down': the old screen slides down to reveal the new one.
+    const EASE = 'cubic-bezier(.32, .72, 0, 1)';
+    function transition(dir, oldView, oldScrollEl, oldScroll) {
+      const view = app.firstElementChild;
+      if (dir === 'left' || dir === 'right') {
+        const next = $('.scroll', view);
+        if (!next || !oldScrollEl) return;
+        Object.assign(oldScrollEl.style, { position: 'absolute', left: 0, right: 0, top: `${next.offsetTop}px`, height: `${next.offsetHeight}px` });
+        view.appendChild(oldScrollEl);
+        oldScrollEl.scrollTop = oldScroll;
+        const sign = dir === 'left' ? 1 : -1;
+        next.animate([{ transform: `translateX(${sign * 100}%)` }, { transform: 'none' }], { duration: 420, easing: EASE });
+        oldScrollEl.animate([{ transform: 'none' }, { transform: `translateX(${-sign * 100}%)` }], { duration: 420, easing: EASE })
+          .finished.then(() => oldScrollEl.remove());
+        return;
+      }
+      Object.assign(oldView.style, { position: 'absolute', inset: 0, zIndex: dir === 'down' ? 2 : 0 });
+      app.insertBefore(oldView, view);
+      if (oldScrollEl) oldScrollEl.scrollTop = oldScroll;
+      if (dir === 'up') {
+        view.style.zIndex = 1;
+        view.style.background = 'var(--bg)';
+        view.animate([{ transform: 'translateY(100%)' }, { transform: 'none' }], { duration: 480, easing: EASE })
+          .finished.then(() => oldView.remove());
+      } else {
+        oldView.style.background = 'var(--bg)';
+        oldView.animate([{ transform: 'none' }, { transform: 'translateY(100%)' }], { duration: 420, easing: EASE })
+          .finished.then(() => oldView.remove());
+      }
+    }
+
+    // Underline under the active feed tab that glides between tabs.
+    function placeTabIndicator() {
+      const ind = $('.tab-ind', app);
+      const active = $('.tab.active', app);
+      if (!ind || !active) { S.ind = null; return; }
+      const to = { left: active.offsetLeft, width: active.offsetWidth };
+      Object.assign(ind.style, { left: `${to.left}px`, width: `${to.width}px` });
+      ind.classList.toggle('cf', S.tab === 'close');
+      if (S.ind && (S.ind.left !== to.left || S.ind.width !== to.width)) {
+        ind.animate([
+          { transform: `translateX(${S.ind.left - to.left}px) scaleX(${S.ind.width / to.width})` },
+          { transform: 'none' },
+        ], { duration: 420, easing: EASE });
+      }
+      S.ind = to;
     }
 
     function feedView() {
@@ -154,13 +214,24 @@
         <nav class="tabs">
           <button class="tab ${S.tab === 'all' ? 'active' : ''}" data-action="tab" data-tab="all">My Friends</button>
           <button class="tab cf ${S.tab === 'close' ? 'active' : ''}" data-action="tab" data-tab="close">${ICONS.star}Close Friends</button>
+          <span class="tab-ind"></span>
         </nav>
-        <div class="scroll">
+        <div class="scroll has-tabbar">
           ${mine ? myBeReal(mine) : ''}
           ${S.tab === 'close' ? recapCard() : ''}
           ${list.length ? list.map(postView).join('') : emptyFeed()}
-        </div>`;
+        </div>
+        ${tabBar()}`;
     }
+
+    // BeReal's bottom navigation. Display only.
+    const tabBar = () => `<nav class="tabbar" aria-hidden="true">
+        <span class="tb-item active">${ICONS.home}<span>Home</span></span>
+        <span class="tb-item">${ICONS.chat}<span>Chat</span></span>
+        <span class="tb-cam">${ICONS.camera}</span>
+        <span class="tb-item">${ICONS.memories}<span>Memories</span></span>
+        <span class="tb-item">${img(self.avatar, 'tb-av')}<span>Profile</span></span>
+      </nav>`;
 
     const myBeReal = (p) => `<div class="mine">${dual(p)}<div class="mine-cap">My BeReal · ${fmtTime(p.minutes)}</div></div>`;
 
@@ -517,9 +588,14 @@
 
     // ---------- Actions ----------
     const actions = {
-      tab: (el) => { S.tab = el.dataset.tab; render(); },
-      'go-friends': () => { S.screen = 'friends'; render(); },
-      'go-feed': () => { S.screen = 'feed'; render(); },
+      tab: (el) => {
+        if (el.dataset.tab === S.tab) return;
+        S.anim = el.dataset.tab === 'close' ? 'left' : 'right';
+        S.tab = el.dataset.tab;
+        render();
+      },
+      'go-friends': () => { S.anim = 'up'; S.screen = 'friends'; render(); },
+      'go-feed': () => { S.anim = 'down'; S.screen = 'feed'; render(); },
       swap: (el) => {
         const id = el.dataset.id;
         S.swapped.has(id) ? S.swapped.delete(id) : S.swapped.add(id);

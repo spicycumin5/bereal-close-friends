@@ -96,7 +96,7 @@ img.broken { visibility: hidden; }
 .island { position: absolute; left: 50%; top: 11px; transform: translateX(-50%); width: 118px; height: 34px; border-radius: 20px; background: #000; }
 .sb-icons { display: flex; gap: 6px; align-items: center; }
 
-.app { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; }
+.app { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; overflow: hidden; }
 .view { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; }
 .view.enter { animation: viewIn .35s ease; }
 @keyframes viewIn { from { opacity: 0; transform: translateY(8px); } }
@@ -211,15 +211,31 @@ img.broken { visibility: hidden; }
 .dot { position: absolute; top: 7px; right: 6px; width: 9px; height: 9px; border-radius: 50%; background: #ff3b30; border: 2px solid #000; }
 .me-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; justify-self: end; background: #222; }
 
-.tabs { flex: none; display: flex; justify-content: center; gap: 22px; padding: 4px 0 10px; }
+.tabs { flex: none; display: flex; justify-content: center; gap: 22px; padding: 4px 0 10px; position: relative; z-index: 3; background: var(--bg); }
 .tab { font-size: 15px; font-weight: 600; color: var(--muted); display: inline-flex; align-items: center; gap: 5px; padding: 4px 0; position: relative; }
 .tab svg { width: 13px; height: 13px; }
 .tab.active { color: var(--text); }
-.tab.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: -3px; height: 2px; border-radius: 2px; background: var(--text); }
 .tab.active.cf { color: var(--green); }
-.tab.active.cf::after { background: var(--green); }
+.tab-ind { position: absolute; bottom: 7px; height: 2px; border-radius: 2px; background: var(--text); transform-origin: left; transition: background .3s; }
+.tab-ind.cf { background: var(--green); }
 
 .scroll { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; padding-bottom: 40px; }
+.scroll.has-tabbar { padding-bottom: 110px; }
+
+/* ---------- Bottom tab bar (display only) ---------- */
+.tabbar {
+  position: absolute; z-index: 4; left: 12px; right: 12px; bottom: 16px; height: 66px;
+  display: flex; align-items: center; justify-content: space-around; padding: 0 6px;
+  border-radius: 33px; background: rgba(36, 36, 38, .78);
+  backdrop-filter: blur(22px) saturate(1.4); -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  box-shadow: 0 0 0 .5px rgba(255, 255, 255, .08), 0 10px 30px rgba(0, 0, 0, .5);
+}
+.tb-item { width: 54px; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 600; color: #a1a1a6; }
+.tb-item svg { width: 23px; height: 23px; }
+.tb-item.active { color: #fff; }
+.tb-cam { width: 52px; height: 52px; border-radius: 50%; background: #fff; color: #000; display: grid; place-items: center; flex: none; }
+.tb-cam svg { width: 25px; height: 25px; }
+.tb-av { width: 23px; height: 23px; border-radius: 50%; object-fit: cover; background: #333; }
 .scroll::-webkit-scrollbar { display: none; }
 .pad { padding: 4px 16px 40px; }
 
@@ -319,7 +335,7 @@ img.broken { visibility: hidden; }
 
 /* ---------- Toast & push banner ---------- */
 .toast {
-  position: absolute; left: 50%; bottom: 34px; transform: translate(-50%, 20px);
+  position: absolute; left: 50%; bottom: 100px; transform: translate(-50%, 20px);
   background: rgba(40, 40, 42, .96); color: #fff; font-size: 13.5px; font-weight: 600;
   padding: 11px 16px; border-radius: 14px; max-width: calc(100% - 40px); width: max-content;
   opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; z-index: 60;
