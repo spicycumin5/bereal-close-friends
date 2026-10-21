@@ -826,7 +826,8 @@
   function showGuest(ids) {
     if (stageEl.classList.contains('two') && !guestId) return;
     if (guestId) removeGuest(false);
-    const id = ids.find((x) => !phones[x]);
+    const free = ids.filter((x) => !phones[x]);
+    const id = free.includes(D.acceptingPhone) ? D.acceptingPhone : free[0];
     if (!id) return;
     guestId = id;
     stageEl.classList.add('two', 'guest-mode');
