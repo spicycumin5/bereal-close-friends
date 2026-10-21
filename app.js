@@ -15,6 +15,9 @@
     chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 3 10.5 13.5M21 3l-6.5 18-4-7.5L3 9.5z"/></svg>',
     camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 8h3.2l1.6-2.5h6.4L16.8 8H20a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.4"/></svg>',
     memories: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9.5h18M8 3v3M16 3v3"/><path d="M7.5 13.5h2M11 13.5h2M14.5 13.5h2M7.5 17h2M11 17h2" stroke-width="2.2"/></svg>',
+    bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16.5V11a6 6 0 1 1 12 0v5.5l1.5 2H4.5z"/><path d="M10 21h4"/></svg>',
+    tag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.7-3.6 3.6-5.8 7-5.8s6.3 2.2 7 5.8"/></svg>',
+    music: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5.5l11-2V16"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>',
     send: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 2.4 2.9 9.6c-.8.3-.8 1.4 0 1.7l7 2.8 2.8 7c.3.8 1.4.8 1.7 0L21.6 2.4z"/></svg>',
     comment: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h14a2.5 2.5 0 0 1 2.5 2.5v9A2.5 2.5 0 0 1 19 17h-6.5L8 21v-4H5a2.5 2.5 0 0 1-2.5-2.5v-9A2.5 2.5 0 0 1 5 3z"/></svg>',
     realmoji: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M8 14.2c1 1.6 2.4 2.4 4 2.4s3-.8 4-2.4"/><circle cx="9" cy="9.8" r=".6" fill="currentColor" stroke-width="1.6"/><circle cx="15" cy="9.8" r=".6" fill="currentColor" stroke-width="1.6"/></svg>',
@@ -216,7 +219,7 @@
         <header class="top">
           <button class="icon-btn" data-action="go-friends" aria-label="Friends">${ICONS.people}${hasIncoming ? '<span class="dot"></span>' : ''}</button>
           <div class="logo">BeReal.</div>
-          ${img(self.avatar, 'me-avatar')}
+          <span class="icon-btn bell" aria-label="Notifications">${ICONS.bell}</span>
         </header>
         <nav class="tabs">
           <button class="tab ${S.tab === 'all' ? 'active' : ''}" data-action="tab" data-tab="all">My Friends</button>
@@ -240,7 +243,21 @@
         <span class="tb-item">${img(self.avatar, 'tb-av')}<span>Profile</span></span>
       </nav>`;
 
-    const myBeReal = (p) => `<div class="mine">${dual(p)}<div class="mine-cap">My BeReal · ${fmtTime(p.minutes)}</div></div>`;
+    // Your own BeReal at the top of the feed, with the bonus-BeReal slot and the
+    // send-to / tag / music buttons. Display only apart from the camera swap.
+    const myBeReal = (p) => `<div class="mine">
+        <div class="mine-row">
+          <span></span>
+          ${dual(p)}
+          <span class="bonus" aria-hidden="true">${ICONS.plus}<span>5 more</span></span>
+        </div>
+        <div class="mine-cap">My BeReal · ${fmtTime(p.minutes)}</div>
+        <div class="mine-tools" aria-hidden="true">
+          <span title="Send to">${ICONS.send}</span>
+          <span title="Tag friends">${ICONS.tag}</span>
+          <span title="Add music">${ICONS.music}</span>
+        </div>
+      </div>`;
 
     function dual(p) {
       // Posts without a separate front camera (inset already in the photo) can't be swapped.
