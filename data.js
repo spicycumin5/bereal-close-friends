@@ -133,7 +133,7 @@ window.DEMO = (() => {
     'miriam-6': { caption: '' },
     'timmy-6':  { minutes: notifTimes[6] + 360, late: 360, caption: '' },
     'ben-6':    { minutes: 19 * 60 + 36, late: 0, caption: '' },
-    'seven-6':  { minutes: now - 23, late: now - 23 - notifTimes[6], caption: 'お分かりいただけただろうか' },
+    'seven-6':  { minutes: now - 24, late: now - 24 - notifTimes[6], caption: 'お分かりいただけただろうか' },
     'aimee-6':  { minutes: notifTimes[6] + 32,  late: 32, caption: 'Claude chose me as the teams snack busboy this week 😋' },
   };
   posts.forEach((p) => Object.assign(p, POST_OVERRIDES[p.id]));

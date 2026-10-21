@@ -214,12 +214,12 @@
 
     function feedView() {
       const today = D.posts.filter((p) => p.day === D.today && p.userId !== userId).sort((a, b) => a.minutes - b.minutes);
-      // The Close Friends tab shows the newest BeReals first; My Friends stays oldest first,
-      // with D.feedFirst's post pinned to the top.
+      // Both tabs show the newest BeReals first; My Friends also pins D.feedFirst's post to the top.
+      const newest = [...today].reverse();
       const pinned = (p) => p.userId === D.feedFirst;
       const list = S.tab === 'close'
-        ? today.filter((p) => isClose(p.userId)).reverse()
-        : [...today.filter(pinned), ...today.filter((p) => !pinned(p))];
+        ? newest.filter((p) => isClose(p.userId))
+        : [...newest.filter(pinned), ...newest.filter((p) => !pinned(p))];
       const mine = D.posts.find((p) => p.userId === userId && p.day === D.today);
       const hasIncoming = friends().some((f) => st(f.id) === 'incoming');
       return `
