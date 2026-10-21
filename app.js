@@ -819,18 +819,17 @@
   // ---------- Presenter controls (side panel) ----------
   const stageEl = $('.stage');
   const mount = $('#phones');
-  // In one-phone mode, sending a close friend request (from onboarding or the Friends
-  // screen) brings in the recipient's phone so the audience can watch it get accepted.
-  // It slides away again shortly after accepting.
+  // Sending a close friend request (from onboarding or the Friends screen) brings in the
+  // recipient's phone so the audience can watch it get accepted. It slides away again
+  // shortly after accepting.
   let guestId = null;
   function showGuest(ids) {
-    if (stageEl.classList.contains('two') && !guestId) return;
     if (guestId) removeGuest(false);
     const free = ids.filter((x) => !phones[x]);
     const id = free.includes(D.acceptingPhone) ? D.acceptingPhone : free[0];
     if (!id) return;
     guestId = id;
-    stageEl.classList.add('two', 'guest-mode');
+    stageEl.classList.add('two');
     phones[id] = createPhone(id, mount, { guest: true });
     phones[id].autoAccept(D.me.id, () => later(() => { if (guestId === id) removeGuest(); }, 2000));
   }
@@ -842,25 +841,14 @@
     guestId = null;
     // If the phone leaves before its scripted accept, accept off-screen like other friends.
     if (store.status(id, D.me.id) === 'incoming') later(() => acceptRequest(id, D.me.id), 800);
-    const finish = () => { p.destroy(); stageEl.classList.remove('guest-mode'); if (!phones[D.secondPhone]) stageEl.classList.remove('two'); };
+    const finish = () => { p.destroy(); if (!guestId) stageEl.classList.remove('two'); };
     if (animate) { p.el.classList.add('leaving'); setTimeout(finish, 400); } else finish();
   }
 
   phones[D.me.id] = createPhone(D.me.id, mount, { beforeSend: showGuest, onboardDone: () => removeGuest() });
   const main = phones[D.me.id];
 
-  function setPhones(two) {
-    removeGuest(false);
-    const id = D.secondPhone;
-    stageEl.classList.toggle('two', two);
-    if (two && !phones[id]) phones[id] = createPhone(id, mount);
-    if (!two && phones[id]) { phones[id].destroy(); delete phones[id]; }
-    document.querySelectorAll('[data-demo^="phones"]').forEach((b) => b.classList.toggle('active', b.dataset.demo === (two ? 'phones2' : 'phones1')));
-  }
-
   const demo = {
-    phones1: () => setPhones(false),
-    phones2: () => setPhones(true),
     // The intro is a first-run prompt, so replaying it starts over with no close friends.
     onboard: () => demo.reset(),
     // Same as tapping "Not now": no close friends get added.
@@ -880,7 +868,7 @@
     },
   };
   document.querySelectorAll('[data-demo]').forEach((b) => b.addEventListener('click', () => {
-    if (!/^(phones|reset|onboard)/.test(b.dataset.demo)) removeGuest();
+    if (!/^(reset|onboard)/.test(b.dataset.demo)) removeGuest();
     demo[b.dataset.demo]();
   }));
 

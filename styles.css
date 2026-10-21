@@ -69,9 +69,6 @@ img.broken { visibility: hidden; }
 .stage.two { gap: 48px; }
 .stage.two .guide { max-width: 320px; }
 
-.mode { display: inline-flex; background: #1c1c1e; border-radius: 999px; padding: 3px; margin-bottom: 26px; }
-.mode button { font-size: 13px; font-weight: 600; color: var(--muted); padding: 7px 14px; border-radius: 999px; }
-.mode button.active { background: #fff; color: #000; }
 
 .phone {
   height: min(844px, calc(100dvh - 48px));

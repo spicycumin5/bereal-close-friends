@@ -21,10 +21,9 @@ window.DEMO = (() => {
     ben: 'Los Angeles, Downtown',
   };
 
-  // The main phone belongs to "me". In two-phone mode, the second phone is `secondPhone`.
+  // The main phone belongs to "me".
   const me = { id: 'me', name: 'Kyumin', username: 'spicy_cumin', avatar: realAvatar('me') };
-  const secondPhone = 'ben';
-  // Whose phone slides in to accept Kyumin's request in one-phone mode (if they were sent one).
+  // Whose phone slides in to accept Kyumin's request (if they were sent one).
   const acceptingPhone = 'evan';
 
   // `reactions` = RealMojis exchanged with Kyumin this month; drives onboarding suggestions.
@@ -45,9 +44,6 @@ window.DEMO = (() => {
   // (onboarding sets them up); Timmy has already sent Kyumin a request.
   const relationships = [
     { a: 'timmy',  b: 'me',     state: 'pending', from: 'timmy' },
-    { a: 'ben',    b: 'chloe',  state: 'close' },
-    { a: 'ben',    b: 'marcus', state: 'close' },
-    { a: 'ben',    b: 'ava',    state: 'close' },
   ];
   // Pre-checked in the onboarding picker.
   const suggested = ['cherry', 'evan', 'miriam', 'timmy', 'aimee'];
@@ -128,5 +124,5 @@ window.DEMO = (() => {
   };
   posts.forEach((p) => Object.assign(p, POST_OVERRIDES[p.id]));
 
-  return { me, friends, secondPhone, acceptingPhone, relationships, suggested, week, notifTimes, posts, today: 6 };
+  return { me, friends, acceptingPhone, relationships, suggested, week, notifTimes, posts, today: 6 };
 })();
