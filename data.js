@@ -1,37 +1,37 @@
 // All mock content for the demo lives here.
 // To use your own photos: drop files into /photos and replace the URLs below,
-// e.g. set a user's `avatar` to "photos/maya.jpg", or override individual posts
+// e.g. set a user's `avatar` to "photos/aimee.jpg", or override individual posts
 // in POST_OVERRIDES at the bottom (back = main camera, front = selfie inset).
 window.DEMO = (() => {
   const avatar = (n) => `https://i.pravatar.cc/400?img=${n}`;
 
   // The main phone belongs to "me". In two-phone mode, the second phone is `secondPhone`.
-  const me = { id: 'me', name: 'Alex', username: 'alex', avatar: avatar(68) };
+  const me = { id: 'me', name: 'Kyumin', username: 'kyumin', avatar: avatar(68) };
   const secondPhone = 'jordan';
 
-  // `reactions` = RealMojis exchanged with Alex this month; drives onboarding suggestions.
+  // `reactions` = RealMojis exchanged with Kyumin this month; drives onboarding suggestions.
   const friends = [
-    { id: 'maya',   name: 'Maya',   username: 'mayachen',   img: 5,  reactions: 9 },
+    { id: 'aimee',  name: 'Aimee',  username: 'aimee',      img: 5,  reactions: 9 },
     { id: 'jordan', name: 'Jordan', username: 'jordanb',    img: 12, reactions: 6 },
-    { id: 'priya',  name: 'Priya',  username: 'priya.k',    img: 47, reactions: 23 },
-    { id: 'leo',    name: 'Leo',    username: 'leo.m',      img: 33, reactions: 18 },
-    { id: 'sofia',  name: 'Sofia',  username: 'sofiaxr',    img: 44, reactions: 15 },
-    { id: 'ethan',  name: 'Ethan',  username: 'ethanw',     img: 13, reactions: 12 },
+    { id: 'cherry', name: 'Cherry', username: 'cherry',     img: 47, reactions: 23 },
+    { id: 'evan',   name: 'Evan',   username: 'evan',       img: 33, reactions: 18 },
+    { id: 'miriam', name: 'Miriam', username: 'miriam',     img: 44, reactions: 15 },
+    { id: 'timmy',  name: 'Timmy',  username: 'timmy',      img: 13, reactions: 12 },
     { id: 'chloe',  name: 'Chloe',  username: 'chloe.dub',  img: 9,  reactions: 3 },
     { id: 'marcus', name: 'Marcus', username: 'marcus_t',   img: 59, reactions: 2 },
     { id: 'ava',    name: 'Ava',    username: 'avaaa',      img: 25, reactions: 1 },
   ].map((f) => ({ ...f, avatar: avatar(f.img) }));
 
-  // Close-friend relationships at the start of the demo. Alex starts with none
-  // (onboarding sets them up); Maya has already sent Alex a request.
+  // Close-friend relationships at the start of the demo. Kyumin starts with none
+  // (onboarding sets them up); Aimee has already sent Kyumin a request.
   const relationships = [
-    { a: 'maya',   b: 'me',     state: 'pending', from: 'maya' },
+    { a: 'aimee',  b: 'me',     state: 'pending', from: 'aimee' },
     { a: 'jordan', b: 'chloe',  state: 'close' },
     { a: 'jordan', b: 'marcus', state: 'close' },
     { a: 'jordan', b: 'ava',    state: 'close' },
   ];
   // Pre-checked in the onboarding picker.
-  const suggested = ['priya', 'leo', 'sofia', 'ethan'];
+  const suggested = ['cherry', 'evan', 'miriam', 'timmy', 'aimee'];
 
   const week = {
     label: 'Oct 12 – 18',
@@ -81,11 +81,11 @@ window.DEMO = (() => {
   });
 
   // Override any post here, keyed by "<userId>-<dayIndex>" (Mon = 0).
-  // e.g. 'maya-6': { back: 'photos/maya-sun-back.jpg', front: 'photos/maya-sun-front.jpg', caption: 'hi' }
+  // e.g. 'aimee-6': { back: 'photos/aimee-sun-back.jpg', front: 'photos/aimee-sun-front.jpg', caption: 'hi' }
   // Sunday ("today") is tuned so the lock-screen demo has both on-time and late close friends.
   const POST_OVERRIDES = {
-    'leo-6':  { minutes: notifTimes[6] + 137, late: 137 },
-    'maya-6': { minutes: notifTimes[6] + 32,  late: 32 },
+    'evan-6':  { minutes: notifTimes[6] + 137, late: 137 },
+    'aimee-6': { minutes: notifTimes[6] + 32,  late: 32 },
   };
   posts.forEach((p) => Object.assign(p, POST_OVERRIDES[p.id]));
 

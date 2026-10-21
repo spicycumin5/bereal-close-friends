@@ -258,7 +258,7 @@
 
     // ---------- Onboarding ----------
     function introSheet() {
-      const faces = [...D.suggested, 'maya', 'jordan'].filter((id) => id !== userId).slice(0, 6);
+      const faces = [...D.suggested, 'jordan'].filter((id) => id !== userId).slice(0, 6);
       const orbit = faces.map((id, i) => {
         const a = (i / faces.length) * Math.PI * 2 - Math.PI / 2;
         return img(users[id].avatar, 'orb', `style="left:${50 + 40 * Math.cos(a)}%;top:${50 + 40 * Math.sin(a)}%"`);
@@ -291,7 +291,7 @@
       const pickRow = (f) => {
         const on = S.picks.has(f.id);
         const reason = st(f.id) === 'incoming' ? '<span class="green">Already asked to be close friends</span>'
-          : st(f.id) === 'outgoing' ? 'Request pending' : `${f.reactions} RealMojis this month`;
+          : st(f.id) === 'outgoing' ? 'Request pending' : `${f.reactions} RealMoji${f.reactions === 1 ? '' : 's'} this month`;
         return `<button class="pick-row ${on ? 'on' : ''}" data-action="ob-toggle" data-id="${f.id}">
           ${img(f.avatar, 'avatar')}
           <div class="who"><div class="row-name">${f.name}</div><div class="row-user">${reason}</div></div>
