@@ -141,7 +141,8 @@
 
     function feedView() {
       const today = D.posts.filter((p) => p.day === D.today && p.userId !== userId).sort((a, b) => a.minutes - b.minutes);
-      const list = S.tab === 'close' ? today.filter((p) => isClose(p.userId)) : today;
+      // The Close Friends tab shows the newest BeReals first; My Friends stays oldest first.
+      const list = S.tab === 'close' ? today.filter((p) => isClose(p.userId)).reverse() : today;
       const mine = D.posts.find((p) => p.userId === userId && p.day === D.today);
       const hasIncoming = friends().some((f) => st(f.id) === 'incoming');
       return `
