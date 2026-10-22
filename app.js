@@ -21,6 +21,11 @@
     send: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 2.4 2.9 9.6c-.8.3-.8 1.4 0 1.7l7 2.8 2.8 7c.3.8 1.4.8 1.7 0L21.6 2.4z"/></svg>',
     comment: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h14a2.5 2.5 0 0 1 2.5 2.5v9A2.5 2.5 0 0 1 19 17h-6.5L8 21v-4H5a2.5 2.5 0 0 1-2.5-2.5v-9A2.5 2.5 0 0 1 5 3z"/></svg>',
     realmoji: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M8 14.2c1 1.6 2.4 2.4 4 2.4s3-.8 4-2.4"/><circle cx="9" cy="9.8" r=".6" fill="currentColor" stroke-width="1.6"/><circle cx="15" cy="9.8" r=".6" fill="currentColor" stroke-width="1.6"/></svg>',
+    gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+    chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+    lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>',
+    globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3z"/></svg>',
+    help: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8"/><circle cx="12" cy="17.2" r=".4" fill="currentColor"/></svg>',
     film: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg>',
   };
   const STATUS_ICONS = `
@@ -116,7 +121,7 @@
       screen: 'feed', tab: 'all', swapped: new Set(), highlight: null,
       onboard: null, picks: new Set(), sent: [], sentShown: new Set(),
       locked: false, off: false, offCaption: '', lockNotifs: [], clock: null,
-      scrollTo: null, viewKey: '',
+      postAlerts: true, scrollTo: null, viewKey: '',
     });
     const S = initial();
 
@@ -142,7 +147,7 @@
       if (S.locked) html = lockView();
       else if (S.onboard === 'pick') html = pickView();
       else if (S.onboard === 'sent') html = sentView();
-      else html = (S.screen === 'feed' ? feedView() : friendsView()) + (S.onboard === 'intro' ? introSheet() : '');
+      else html = SCREENS[S.screen]() + (S.onboard === 'intro' ? introSheet() : '');
 
       app.innerHTML = `<div class="view ${entering && !anim ? 'enter' : ''}">${html}</div>`;
       screenEl.classList.toggle('locked', S.locked);
@@ -164,7 +169,8 @@
 
     // BeReal-style transitions. 'left'/'right': only the feed slides sideways under a
     // fixed header (switching tabs). 'up': the new screen slides up over the old one.
-    // 'down': the old screen slides down to reveal the new one.
+    // 'down': the old screen slides down to reveal the new one. 'push': the new screen
+    // slides in from the right over the old one. 'pop': the old screen slides back out to the right.
     const EASE = 'cubic-bezier(.32, .72, 0, 1)';
     function transition(dir, oldView, oldScrollEl, oldScroll) {
       const view = app.firstElementChild;
@@ -180,17 +186,19 @@
           .finished.then(() => oldScrollEl.remove());
         return;
       }
-      Object.assign(oldView.style, { position: 'absolute', inset: 0, zIndex: dir === 'down' ? 2 : 0 });
+      const covering = dir === 'up' || dir === 'push';
+      Object.assign(oldView.style, { position: 'absolute', inset: 0, zIndex: covering ? 0 : 2 });
       app.insertBefore(oldView, view);
       if (oldScrollEl) oldScrollEl.scrollTop = oldScroll;
-      if (dir === 'up') {
+      const off = dir === 'up' || dir === 'down' ? 'translateY(100%)' : 'translateX(100%)';
+      if (covering) {
         view.style.zIndex = 1;
         view.style.background = 'var(--bg)';
-        view.animate([{ transform: 'translateY(100%)' }, { transform: 'none' }], { duration: 480, easing: EASE })
+        view.animate([{ transform: off }, { transform: 'none' }], { duration: 480, easing: EASE })
           .finished.then(() => oldView.remove());
       } else {
         oldView.style.background = 'var(--bg)';
-        oldView.animate([{ transform: 'none' }, { transform: 'translateY(100%)' }], { duration: 420, easing: EASE })
+        oldView.animate([{ transform: 'none' }, { transform: off }], { duration: 420, easing: EASE })
           .finished.then(() => oldView.remove());
       }
     }
@@ -226,7 +234,7 @@
         <header class="top">
           <button class="icon-btn" data-action="go-friends" aria-label="Friends">${ICONS.people}${hasIncoming ? '<span class="dot"></span>' : ''}</button>
           <div class="logo">BeReal.</div>
-          <span class="icon-btn bell" aria-label="Notifications">${ICONS.bell}</span>
+          <button class="icon-btn bell" data-action="go-activity" aria-label="Activity">${ICONS.bell}</button>
         </header>
         <nav class="tabs">
           <button class="tab ${S.tab === 'all' ? 'active' : ''}" data-action="tab" data-tab="all">My Friends</button>
@@ -241,13 +249,13 @@
         ${tabBar()}`;
     }
 
-    // BeReal's bottom navigation. Display only.
-    const tabBar = () => `<nav class="tabbar" aria-hidden="true">
-        <span class="tb-item active">${ICONS.home}<span>Home</span></span>
-        <span class="tb-item">${ICONS.chat}<span>Chat</span></span>
-        <span class="tb-cam">${ICONS.camera}</span>
-        <span class="tb-item">${ICONS.memories}<span>Memories</span></span>
-        <span class="tb-item">${img(self.avatar, 'tb-av')}<span>Profile</span></span>
+    // BeReal's bottom navigation. Only Home and Profile do anything.
+    const tabBar = (active = 'home') => `<nav class="tabbar">
+        <button class="tb-item ${active === 'home' ? 'active' : ''}" data-action="go-home">${ICONS.home}<span>Home</span></button>
+        <span class="tb-item" aria-hidden="true">${ICONS.chat}<span>Chat</span></span>
+        <span class="tb-cam" aria-hidden="true">${ICONS.camera}</span>
+        <span class="tb-item" aria-hidden="true">${ICONS.memories}<span>Memories</span></span>
+        <button class="tb-item ${active === 'profile' ? 'active' : ''}" data-action="go-profile">${img(self.avatar, 'tb-av')}<span>Profile</span></button>
       </nav>`;
 
     // Your own BeReal at the top of the feed, with the bonus-BeReal slot and the
@@ -377,6 +385,16 @@
             st(f.id) === 'outgoing'
               ? '<button class="btn pending" disabled>Requested</button>'
               : `<button class="btn primary" data-action="request" data-id="${f.id}">${ICONS.plus} Close friend</button>`)))}
+          <div class="section"><div class="section-title">Notifications</div>
+            <div class="row setting">
+              <span class="setting-icon">${ICONS.bell}</span>
+              <div class="who">
+                <div class="row-name">Close friend posts</div>
+                <div class="row-user">Lock screen alerts when they post on time or late</div>
+              </div>
+              <button class="switch ${S.postAlerts ? 'on' : ''}" role="switch" aria-checked="${S.postAlerts}" aria-label="Close friend post notifications" data-action="toggle-alerts"></button>
+            </div>
+          </div>
         </div>`;
     }
 
@@ -392,6 +410,119 @@
         </div>
         <div class="row-actions">${actions}</div>
       </div>`;
+
+    // ---------- Profile & settings ----------
+    function profileView() {
+      const mine = D.posts.find((p) => p.userId === userId && p.day === D.today);
+      const close = closeFriends();
+      return `
+        <header class="top">
+          <span></span>
+          <div class="title">Profile</div>
+          <button class="icon-btn end" data-action="go-settings" aria-label="Settings">${ICONS.gear}</button>
+        </header>
+        <div class="scroll pad has-tabbar">
+          <div class="profile-head">
+            ${img(self.avatar, 'profile-av')}
+            <div class="profile-name">${self.name}</div>
+            <div class="profile-user">${self.username}</div>
+          </div>
+          <button class="profile-cf" data-action="go-friends">
+            <span class="green">${ICONS.star}</span>
+            <span class="profile-cf-text">${close.length ? `${close.length} close friend${close.length === 1 ? '' : 's'}` : 'No close friends yet'}</span>
+            <span class="chev">${ICONS.chevron}</span>
+          </button>
+          ${mine ? `<div class="section-title spaced">Today's BeReal</div><div class="profile-post">${dual(mine)}</div>` : ''}
+        </div>
+        ${tabBar('profile')}`;
+    }
+
+    // Only Notifications opens; the other rows are there to make the screen look real.
+    function settingsView() {
+      const item = (icon, label, action) => action
+        ? `<button class="set-item" data-action="${action}"><span class="set-ic">${icon}</span><span class="set-label">${label}</span><span class="chev">${ICONS.chevron}</span></button>`
+        : `<div class="set-item dim" aria-disabled="true"><span class="set-ic">${icon}</span><span class="set-label">${label}</span><span class="chev">${ICONS.chevron}</span></div>`;
+      return `
+        <header class="top">
+          <button class="icon-btn" data-action="settings-back" aria-label="Back">${ICONS.back}</button>
+          <div class="title">Settings</div>
+          <span></span>
+        </header>
+        <div class="scroll pad">
+          <div class="section-title">Features</div>
+          <div class="set-group">
+            ${item(ICONS.bell, 'Notifications', 'go-notifs')}
+            ${item(ICONS.lock, 'Privacy')}
+            ${item(ICONS.globe, 'Time Zone')}
+          </div>
+          <div class="section-title spaced">About</div>
+          <div class="set-group">
+            ${item(ICONS.help, 'Help')}
+          </div>
+        </div>`;
+    }
+
+    function notifsView() {
+      return `
+        <header class="top">
+          <button class="icon-btn" data-action="notifs-back" aria-label="Back">${ICONS.back}</button>
+          <div class="title">Notifications</div>
+          <span></span>
+        </header>
+        <div class="scroll pad">
+          <div class="section-title">Close Friends</div>
+          <div class="set-group">
+            <div class="set-item">
+              <span class="set-ic green">${ICONS.star}</span>
+              <span class="set-label">Close friend posts<small>Lock screen alerts when they post on time or late</small></span>
+              <button class="switch ${S.postAlerts ? 'on' : ''}" role="switch" aria-checked="${S.postAlerts}" aria-label="Close friend post notifications" data-action="toggle-alerts"></button>
+            </div>
+          </div>
+          <p class="set-foot">You'll still get close friend requests and your Sunday recap.</p>
+        </div>`;
+    }
+
+    // ---------- Activity ----------
+    // Close friend requests (answerable right here) and new close friends, then
+    // RealMojis and comments on your BeReal from data.js.
+    function activityView() {
+      const incoming = friends().filter((f) => st(f.id) === 'incoming');
+      const ago = (minutes) => agoLabel({ minutes });
+      const item = (f, text, side, cls = '') => `<div class="act ${cls} ${S.highlight === f.id ? 'highlight' : ''}">
+          ${img(f.avatar, 'avatar')}
+          <div class="act-text">${text}</div>
+          ${side}
+        </div>`;
+      const requests = incoming.map((f) => item(f,
+        `<b>${f.name}</b> wants to be close friends.`,
+        `<div class="row-actions">
+          <button class="btn ghost" data-action="decline" data-id="${f.id}">Decline</button>
+          <button class="btn primary" data-action="accept" data-id="${f.id}">Accept</button>
+        </div>`));
+      const joined = closeFriends().map((f) => item(f,
+        `<b>${f.name}</b> and you are now close friends.`,
+        `<span class="act-badge green">${ICONS.star}</span>`, 'cf'));
+      const mine = D.posts.find((p) => p.userId === userId && p.day === D.today);
+      const reactions = D.activity.map((a) => item(users[a.userId],
+        a.type === 'comment'
+          ? `<b>${users[a.userId].name}</b> commented: ${a.text}<span class="act-when">${ago(a.minutes)}</span>`
+          : `<b>${users[a.userId].name}</b> reacted to your BeReal.<span class="act-when">${ago(a.minutes)}</span>`,
+        a.type === 'comment' && mine
+          ? img(mine.back, 'act-thumb')
+          : `<span class="act-emoji">${a.emoji || '💬'}</span>`));
+      return `
+        <header class="top">
+          <button class="icon-btn" data-action="activity-back" aria-label="Back">${ICONS.back}</button>
+          <div class="title">Activity</div>
+          <span></span>
+        </header>
+        <div class="scroll pad">
+          ${requests.length || joined.length ? `<div class="section"><div class="section-title">${ICONS.star} Close Friends</div>${[...requests, ...joined].join('')}</div>` : ''}
+          <div class="section"><div class="section-title">Today</div>${reactions.join('')}</div>
+        </div>`;
+    }
+
+    const SCREENS = { feed: feedView, friends: friendsView, profile: profileView, settings: settingsView, notifs: notifsView, activity: activityView };
 
     // ---------- Onboarding ----------
     function introSheet() {
@@ -527,11 +658,12 @@
     }
 
     function startScene(scene) {
-      const caption = scene === 'late' ? 'Later that day…' : '';
+      const quietLate = scene === 'late' && !S.postAlerts;
+      const caption = scene === 'late' ? `Later that day…${quietLate ? '<br>Close friend alerts are off.' : ''}` : '';
       Object.assign(S, { locked: true, off: true, offCaption: caption, lockNotifs: [], onboard: null, clock: null });
       render();
       const posts = D.posts
-        .filter((p) => p.day === D.today && p.userId !== userId && isClose(p.userId))
+        .filter((p) => S.postAlerts && p.day === D.today && p.userId !== userId && isClose(p.userId))
         .filter((p) => (scene === 'late' ? p.late : !p.late))
         .sort((a, b) => a.minutes - b.minutes)
         .slice(0, 5);
@@ -550,7 +682,8 @@
           })),
         ];
       }
-      if (!seq.length) {
+      // With alerts off, the BeReal alert still comes but late posts stay silent.
+      if (!seq.length && !quietLate) {
         const body = closeFriends().length ? 'Everyone in your circle posted on time today 🎉' : 'Add close friends to hear when they post.';
         seq.push({ title: '★ Close Friends', body, minutes: D.notifTimes[D.today] + 180, go: scene === 'late' && !closeFriends().length ? 'friends' : 'close' });
       }
@@ -627,7 +760,7 @@
 
     function route(n) {
       closeReel();
-      Object.assign(S, { locked: false, off: false, onboard: null });
+      Object.assign(S, { locked: false, off: false, onboard: null, friendsBack: null });
       if (n.go === 'friends') S.screen = 'friends';
       else {
         S.screen = 'feed';
@@ -654,15 +787,25 @@
         S.tab = el.dataset.tab;
         render();
       },
-      'go-friends': () => { S.anim = 'up'; S.screen = 'friends'; render(); },
-      'go-feed': () => { S.anim = 'down'; S.screen = 'feed'; render(); },
+      // Friends' back button returns to whichever screen opened it (the feed or Profile).
+      'go-friends': () => { Object.assign(S, { anim: 'up', friendsBack: S.screen === 'profile' ? 'profile' : 'feed', screen: 'friends' }); render(); },
+      // The bell opens the Friends screen scrolled to its notification settings.
+      'go-activity': () => { Object.assign(S, { anim: 'push', screen: 'activity' }); render(); },
+      'activity-back': () => { Object.assign(S, { anim: 'pop', screen: 'feed' }); render(); },
+      'go-feed': () => { S.anim = 'down'; S.screen = S.friendsBack || 'feed'; S.friendsBack = null; render(); },
+      'go-home': () => { if (S.screen !== 'feed') { S.screen = 'feed'; render(); } },
+      'go-profile': () => { if (S.screen !== 'profile') { S.screen = 'profile'; render(); } },
+      'go-settings': () => { Object.assign(S, { anim: 'push', screen: 'settings' }); render(); },
+      'settings-back': () => { Object.assign(S, { anim: 'pop', screen: 'profile' }); render(); },
+      'go-notifs': () => { Object.assign(S, { anim: 'push', screen: 'notifs' }); render(); },
+      'notifs-back': () => { Object.assign(S, { anim: 'pop', screen: 'settings' }); render(); },
       swap: (el) => {
         const id = el.dataset.id;
         S.swapped.has(id) ? S.swapped.delete(id) : S.swapped.add(id);
         render();
       },
       request: (el) => {
-        hooks.beforeSend?.([el.dataset.id]);
+        hooks.beforeSend?.([el.dataset.id], { manual: true });
         sendRequest(userId, el.dataset.id);
         toast(`Close friend request sent to ${users[el.dataset.id].name}`);
       },
@@ -670,11 +813,17 @@
         S.highlight = el.dataset.id;
         acceptRequest(userId, el.dataset.id);
         toast(`★ You and ${users[el.dataset.id].name} are close friends`);
+        hooks.onRespond?.(el.dataset.id);
       },
-      decline: (el) => declineRequest(userId, el.dataset.id),
+      decline: (el) => { declineRequest(userId, el.dataset.id); hooks.onRespond?.(el.dataset.id); },
       remove: (el) => {
         removeClose(userId, el.dataset.id);
         toast(`Removed ${users[el.dataset.id].name} from close friends`);
+      },
+      'toggle-alerts': () => {
+        S.postAlerts = !S.postAlerts;
+        render();
+        toast(S.postAlerts ? 'Close friend post alerts on' : 'Close friend post alerts off');
       },
       'open-reel': () => openReel(),
       'ob-start': () => { S.onboard = 'pick'; render(); },
@@ -957,7 +1106,7 @@
       },
       show(screen, tab) {
         closeReel();
-        Object.assign(S, { locked: false, off: false, onboard: null, screen, tab: tab || S.tab });
+        Object.assign(S, { locked: false, off: false, onboard: null, friendsBack: null, screen, tab: tab || S.tab });
         render();
       },
       startOnboarding() {
@@ -987,18 +1136,20 @@
   const stageEl = $('.stage');
   const mount = $('#phones');
   // Sending a close friend request (from onboarding or the Friends screen) brings in the
-  // recipient's phone so the audience can watch it get accepted. It slides away again
-  // shortly after accepting.
+  // recipient's phone so the audience can watch it get accepted. During onboarding it
+  // accepts by itself; a request sent from the Friends screen (`manual`) waits for the
+  // presenter to tap Accept or Decline on it. It slides away again shortly after.
   let guestId = null;
-  function showGuest(ids) {
+  function showGuest(ids, { manual = false } = {}) {
     if (guestId) removeGuest(false);
     const free = ids.filter((x) => !phones[x]);
     const id = free.includes(D.acceptingPhone) ? D.acceptingPhone : free[0];
     if (!id) return;
     guestId = id;
     stageEl.classList.add('two');
-    phones[id] = createPhone(id, mount, { guest: true });
-    phones[id].autoAccept(D.me.id, () => later(() => { if (guestId === id) removeGuest(); }, 2000));
+    const leave = () => later(() => { if (guestId === id) removeGuest(); }, 2000);
+    phones[id] = createPhone(id, mount, { guest: true, onRespond: (from) => { if (manual && from === D.me.id) leave(); } });
+    if (!manual) phones[id].autoAccept(D.me.id, leave);
   }
   function removeGuest(animate = true) {
     if (!guestId) return;

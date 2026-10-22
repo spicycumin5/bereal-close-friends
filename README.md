@@ -26,7 +26,8 @@ After editing `app.js`, `data.js` or `styles.css`, bump the `?v=` number on thei
 ## Presenting
 - The demo opens with the in-app Close Friends announcement, followed by the suggested-friends picker.
 - On desktop, the left panel has shortcuts for each step: replay or skip onboarding, open Friends, jump to the Close Friends tab, turn the phone off (lock-screen notifications as close friends post on time or late), send the Sunday push notification, play the recap, and reset.
-- When Kyumin sends a close friend request, the recipient's phone (Evan's after onboarding) slides in, receives the notification, accepts it, and slides away. Other friends accept automatically after a moment.
+- During onboarding, Evan's phone slides in, receives the request, accepts it on its own, and slides away. Other friends accept automatically after a moment.
+- When Kyumin sends a request from the Friends screen (try Ben), the recipient's phone slides in and waits for you to tap Accept or Decline on it, then slides away.
 - Tap a photo to swap front and back cameras.
 - Recap: tap the right side to jump to the next day, the left side to go back a day, hold to pause. Keyboard: ← → Space Esc.
 - On a phone, the frame is dropped and the demo fills the screen.

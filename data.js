@@ -138,5 +138,15 @@ window.DEMO = (() => {
   };
   posts.forEach((p) => Object.assign(p, POST_OVERRIDES[p.id]));
 
-  return { me, friends, acceptingPhone, feedFirst, ad, relationships, suggested, week, notifTimes, now, posts, today: 6 };
+  // The Activity screen (the bell on the feed): reactions and comments on Kyumin's BeReal today.
+  // `minutes` = minutes after midnight on Sunday.
+  const activity = [
+    { userId: 'cherry', type: 'realmoji', emoji: '😂', minutes: now - 6 },
+    { userId: 'evan',   type: 'comment', text: 'monke deserves a break', minutes: now - 18 },
+    { userId: 'miriam', type: 'realmoji', emoji: '😍', minutes: now - 41 },
+    { userId: 'aimee',  type: 'comment', text: 'distraked by what 😭', minutes: now - 95 },
+    { userId: 'seven',  type: 'realmoji', emoji: '👍', minutes: now - 150 },
+  ];
+
+  return { me, friends, acceptingPhone, feedFirst, ad, relationships, suggested, week, notifTimes, now, posts, activity, today: 6 };
 })();
