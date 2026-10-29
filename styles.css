@@ -65,19 +65,24 @@ img.broken { visibility: hidden; }
 .phone-label { display: none; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #c7c7cc; }
 .phone-label img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; background: #333; }
 .stage.two .phone-label { display: flex; }
-.stage.two .phone { height: min(844px, calc(100dvh - 82px), calc((100vw - 520px) / 2 / 0.4621)); }
+.stage.two .phone-fit { height: min(844px, calc(100dvh - 82px), calc((100vw - 520px) / 2 / 0.4621)); }
 .stage.two { gap: 48px; }
 .stage.two .guide { max-width: 320px; }
 
 
+/* .phone-fit takes the space the window allows; the phone inside always lays out at
+   390x844 and is scaled to fill it (--phone-scale, set from app.js), so a smaller window
+   shrinks the whole phone evenly instead of squeezing its contents. */
+.phone-fit { position: relative; height: min(844px, calc(100dvh - 48px)); aspect-ratio: 390 / 844; flex: none; }
 .phone {
-  height: min(844px, calc(100dvh - 48px));
-  aspect-ratio: 390 / 844;
+  position: absolute; top: 0; left: 0;
+  width: 390px; height: 844px;
+  transform: scale(var(--phone-scale, 1));
+  transform-origin: 0 0;
   border-radius: 56px;
   padding: 12px;
   background: #1c1c1e;
   box-shadow: 0 0 0 2px #2c2c2e, 0 40px 120px rgba(0, 0, 0, .7);
-  flex: none;
 }
 .phone-screen {
   position: relative;
@@ -348,12 +353,15 @@ img.broken { visibility: hidden; }
 .section { margin-bottom: 24px; }
 .section-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
 .section-empty { font-size: 14px; color: #5a5a5f; padding: 6px 0; }
-.row { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+/* On a short window the phone gets narrow, so the buttons drop below the name instead of covering it. */
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 8px 0; }
 .row .avatar { width: 46px; height: 46px; }
+.row .who { flex-basis: 90px; }
+.row:not(.setting) .who :is(.row-name, .row-user) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .row-name { font-size: 15px; font-weight: 700; }
 .row-user { font-size: 13px; color: var(--muted); }
 .row-sub { font-size: 12.5px; color: var(--green); margin-top: 2px; }
-.row-actions { display: flex; gap: 6px; }
+.row-actions { display: flex; gap: 6px; flex: none; margin-left: auto; }
 .row.highlight { animation: flash 1.2s ease; border-radius: 12px; }
 @keyframes flash { 0%, 40% { background: var(--green-dim); } 100% { background: transparent; } }
 
@@ -515,18 +523,32 @@ img.broken { visibility: hidden; }
 .end-actions .btn { padding: 11px 18px; font-size: 14px; }
 
 /* ---------- Mobile: drop the frame, fill the viewport ---------- */
+/* Too narrow for the guide beside two phones: hide the guide while the guest phone is up
+   rather than shrinking both phones until their contents no longer fit. */
+@media (min-width: 761px) and (max-width: 1150px) {
+  .stage.two .guide { display: none; }
+  .stage.two .phone-fit { height: min(844px, calc(100dvh - 82px), calc((100vw - 84px) / 2 / 0.4621)); }
+}
 @media (max-width: 760px) {
   .guide { display: none; }
   .stage { padding: 0; }
-  .phone-wrap + .phone-wrap { display: none; }
-  .stage.two .phone-label { display: none; }
+  /* Only one phone fits, so the guest phone covers yours until it slides away. */
+  .phone-wrap.guest { position: fixed; inset: 0; z-index: 100; justify-content: center; background: var(--page); }
+  .phone-wrap:not(.guest) .phone-label { display: none; }
+  .stage.two .phone-fit { height: min(844px, calc(100dvh - 82px)); }
 }
+/* On a real phone the app is the screen: no frame and no scaling. */
 @media (max-width: 520px) {
-  .stage.two .phone,
-  .phone { height: 100dvh; width: 100vw; aspect-ratio: auto; border-radius: 0; padding: 0; box-shadow: none; background: #000; }
+  .stage.two .phone-fit,
+  .phone-fit { height: 100dvh; width: 100vw; aspect-ratio: auto; }
+  .phone { width: 100%; height: 100%; transform: none; border-radius: 0; padding: 0; box-shadow: none; background: #000; }
   .phone-screen { border-radius: 0; }
+  .phone-wrap.guest { gap: 0; justify-content: flex-start; }
+  .phone-wrap.guest .phone-label { padding: calc(env(safe-area-inset-top, 0px) + 10px) 0 10px; }
+  .phone-wrap.guest .phone-fit { flex: 1; height: auto; min-height: 0; }
   .statusbar { height: env(safe-area-inset-top, 0px); padding: 0; overflow: hidden; }
   .statusbar > * { display: none; }
+  .phone-wrap.guest .statusbar { height: 0; }
   .push { top: calc(env(safe-area-inset-top, 0px) + 8px); }
   .reel-progress { top: calc(env(safe-area-inset-top, 0px) + 10px); }
   .reel-top { top: calc(env(safe-area-inset-top, 0px) + 20px); }

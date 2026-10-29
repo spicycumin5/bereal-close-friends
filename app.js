@@ -105,14 +105,18 @@
     wrap.className = `phone-wrap ${hooks.guest ? 'guest' : ''}`;
     wrap.innerHTML = `
       <div class="phone-label">${img(self.avatar)}<span>${self.name}'s phone</span></div>
-      <div class="phone">
+      <div class="phone-fit"><div class="phone">
         <div class="phone-screen">
           <div class="statusbar"><span class="sb-time">9:41</span><span class="island"></span><span class="sb-icons">${STATUS_ICONS}</span></div>
           <div class="app"></div>
           <div class="toast" role="status" aria-live="polite"></div>
         </div>
-      </div>`;
+      </div></div>`;
     mount.appendChild(wrap);
+    // Scale the 390x844 phone to whatever height the window leaves for it (see .phone-fit).
+    const phoneEl = $('.phone', wrap);
+    const fitter = new ResizeObserver(([e]) => phoneEl.style.setProperty('--phone-scale', e.contentRect.height / 844));
+    fitter.observe($('.phone-fit', wrap));
     const screenEl = $('.phone-screen', wrap);
     const app = $('.app', wrap);
     const toastEl = $('.toast', wrap);
@@ -714,13 +718,14 @@
     // top, new ones slide in below) instead of re-rendering the whole screen.
     function addLockNotif() {
       const list = $('.lock-notifs', app);
-      const before = new Map([...list.children].map((c) => [c.dataset.nid, c.getBoundingClientRect().top]));
+      // offsetTop is in the phone's own (unscaled) pixels, matching the translateY below.
+      const before = new Map([...list.children].map((c) => [c.dataset.nid, c.offsetTop]));
       list.innerHTML = S.lockNotifs.map((x, i) => notifCard(x, i)).join('');
       $('.lock-time', app).textContent = clockTime(S.clock ?? D.notifTimes[D.today]);
       [...list.children].forEach((c) => {
         const top = before.get(c.dataset.nid);
         if (top != null) {
-          c.animate([{ transform: `translateY(${top - c.getBoundingClientRect().top}px)` }, { transform: 'none' }], { duration: 450, easing: 'cubic-bezier(.2, .9, .3, 1)' });
+          c.animate([{ transform: `translateY(${top - c.offsetTop}px)` }, { transform: 'none' }], { duration: 450, easing: 'cubic-bezier(.2, .9, .3, 1)' });
         }
       });
       list.scrollTo({ top: list.scrollHeight, behavior: 'smooth' });
@@ -1125,6 +1130,7 @@
         render();
       },
       destroy() {
+        fitter.disconnect();
         unsubscribe();
         closeReel();
         wrap.remove();
