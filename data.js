@@ -71,8 +71,10 @@ window.DEMO = (() => {
     dates: ['Oct 12', 'Oct 13', 'Oct 14', 'Oct 15', 'Oct 16', 'Oct 17', 'Oct 18'],
   };
 
-  // The daily "⚠️ Time to BeReal" notification, in minutes after midnight.
-  const notifTimes = [12 * 60 + 41, 16 * 60 + 3, 10 * 60 + 22, 19 * 60 + 47, 14 * 60 + 15, 21 * 60 + 8, 13 * 60 + 36];
+  const hm = (h, m) => h * 60 + m;
+  // The daily "⚠️ Time to BeReal" notification, in minutes after midnight. Mon–Sat sit just
+  // before the first real BeReal that day (WEEK_POSTS below).
+  const notifTimes = [hm(14, 24), hm(14, 25), hm(11, 31), hm(7, 30), hm(18, 7), hm(18, 49), hm(13, 36)];
   // The current time on Sunday; feed timestamps read "<n> hours ago" relative to it.
   const now = 20 * 60;
 
@@ -121,6 +123,39 @@ window.DEMO = (() => {
     else posts.push({ id: `${userId}-6`, userId, day: 6, minutes: notifTimes[6] + 1, late: 0, caption: '', location: pick(locations), ...photos });
   });
   posts.forEach((p) => { if (HOME_LOCATIONS[p.userId]) p.location = HOME_LOCATIONS[p.userId]; });
+
+  // Real BeReals from earlier in the week (Mon = 0), cropped to photos/<file>-back.jpg and
+  // <file>-front.jpg at their real post times. Anyone listed here only has these posts before
+  // Sunday, replacing the stock ones; a post is late if it came more than 2 min after notifTimes.
+  const WEEK_POSTS = [
+    { userId: 'evan',   day: 0, file: 'evan-mon',   minutes: hm(14, 26), location: 'Los Angeles, North University Park' },
+    { userId: 'aimee',  day: 0, file: 'aimee-mon',  minutes: hm(16, 13) },
+    { userId: 'miriam', day: 0, file: 'miriam-mon', minutes: hm(19, 12), location: 'Chino Hills, United States' },
+    { userId: 'cherry', day: 0, file: 'cherry-mon', minutes: hm(19, 16), location: 'South Pasadena, Downtown' },
+    { userId: 'timmy',  day: 0, file: 'timmy-mon',  minutes: hm(20, 18), location: 'South Pasadena, Downtown' },
+    { userId: 'evan',   day: 1, file: 'evan-tue',   minutes: hm(14, 27), location: 'Los Angeles, North University Park' },
+    { userId: 'aimee',  day: 1, file: 'aimee-tue',  minutes: hm(14, 56), caption: 'Mog ops' },
+    { userId: 'miriam', day: 1, file: 'miriam-tue', minutes: hm(15, 10), location: 'Fullerton, United States' },
+    { userId: 'evan',   day: 2, file: 'evan-wed',   minutes: hm(11, 33), location: 'Yorba Linda, United States' },
+    { userId: 'miriam', day: 2, file: 'miriam-wed', minutes: hm(13, 2),  location: 'Chino, United States' },
+    { userId: 'aimee',  day: 2, file: 'aimee-wed',  minutes: hm(16, 42) },
+    { userId: 'timmy',  day: 3, file: 'timmy-thu',  minutes: hm(7, 31),  location: 'Los Angeles, Lafayette Park' },
+    { userId: 'me',     day: 3, file: 'kyumin-thu', minutes: hm(11, 18), location: 'San Francisco' },
+    { userId: 'me',     day: 4, file: 'kyumin-fri', minutes: hm(18, 9),  location: 'Pacifica, Westview', caption: 'if you can, maybe I can too 🌱' },
+    { userId: 'me',     day: 5, file: 'kyumin-sat', minutes: hm(18, 50) },
+    { userId: 'timmy',  day: 5, file: 'timmy-sat',  minutes: hm(19, 23), location: 'Los Angeles, Valley Glen', caption: 'ian eastwood halloween' },
+  ];
+  const weekPosters = new Set(WEEK_POSTS.map((p) => p.userId));
+  for (let i = posts.length - 1; i >= 0; i--) {
+    if (weekPosters.has(posts[i].userId) && posts[i].day < 6) posts.splice(i, 1);
+  }
+  WEEK_POSTS.forEach(({ file, ...p }) => {
+    const late = p.minutes - notifTimes[p.day];
+    posts.push({
+      id: `${p.userId}-${p.day}`, late: late > 2 ? late : 0, caption: '', location: HOME_LOCATIONS[p.userId],
+      back: `photos/${file}-back.jpg`, front: `photos/${file}-front.jpg`, ...p,
+    });
+  });
 
 
   // Override any post here, keyed by "<userId>-<dayIndex>" (Mon = 0),
