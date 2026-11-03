@@ -74,7 +74,7 @@ window.DEMO = (() => {
   const hm = (h, m) => h * 60 + m;
   // The daily "⚠️ Time to BeReal" notification, in minutes after midnight. Mon–Sat sit just
   // before the first real BeReal that day (WEEK_POSTS below).
-  const notifTimes = [hm(14, 24), hm(14, 25), hm(11, 31), hm(7, 30), hm(18, 7), hm(18, 49), hm(13, 36)];
+  const notifTimes = [hm(14, 24), hm(14, 25), hm(11, 31), hm(7, 30), hm(12, 24), hm(18, 49), hm(13, 36)];
   // The current time on Sunday; feed timestamps read "<n> hours ago" relative to it.
   const now = 20 * 60;
 
@@ -136,11 +136,21 @@ window.DEMO = (() => {
     { userId: 'evan',   day: 1, file: 'evan-tue',   minutes: hm(14, 27), location: 'Los Angeles, North University Park' },
     { userId: 'aimee',  day: 1, file: 'aimee-tue',  minutes: hm(14, 56), caption: 'Mog ops' },
     { userId: 'miriam', day: 1, file: 'miriam-tue', minutes: hm(15, 10), location: 'Fullerton, United States' },
+    { userId: 'me',     day: 1, file: 'kyumin-tue', minutes: hm(15, 26), location: 'Pacifica, Westview', caption: 'happy halloween!' },
     { userId: 'evan',   day: 2, file: 'evan-wed',   minutes: hm(11, 33), location: 'Yorba Linda, United States' },
     { userId: 'miriam', day: 2, file: 'miriam-wed', minutes: hm(13, 2),  location: 'Chino, United States' },
     { userId: 'aimee',  day: 2, file: 'aimee-wed',  minutes: hm(16, 42) },
+    { userId: 'me',     day: 2, file: 'kyumin-wed', minutes: hm(18, 43), caption: 'how to dynamically program my fist into leetcodes face' },
+    { userId: 'cherry', day: 2, file: 'cherry-wed', minutes: hm(21, 23), location: 'Los Angeles, Lafayette Park' },
     { userId: 'timmy',  day: 3, file: 'timmy-thu',  minutes: hm(7, 31),  location: 'Los Angeles, Lafayette Park' },
     { userId: 'me',     day: 3, file: 'kyumin-thu', minutes: hm(11, 18), location: 'San Francisco' },
+    { userId: 'evan',   day: 3, file: 'evan-thu',   minutes: hm(12, 16), location: 'Yorba Linda, United States' },
+    { userId: 'miriam', day: 3, file: 'miriam-thu', minutes: hm(13, 50), location: 'Chino Hills, United States', caption: 'I lay down for a second' },
+    { userId: 'aimee',  day: 3, file: 'aimee-thu',  minutes: hm(15, 7),  caption: 'Why is it already dark 😩' },
+    { userId: 'miriam', day: 4, file: 'miriam-fri', minutes: hm(12, 25), location: 'Chino Hills, United States' },
+    { userId: 'evan',   day: 4, file: 'evan-fri',   minutes: hm(12, 25) },
+    { userId: 'aimee',  day: 4, file: 'aimee-fri',  minutes: hm(12, 28) },
+    { userId: 'timmy',  day: 4, file: 'timmy-fri',  minutes: hm(13, 38), location: 'Malibu, United States', caption: 'not over this' },
     { userId: 'me',     day: 4, file: 'kyumin-fri', minutes: hm(18, 9),  location: 'Pacifica, Westview', caption: 'if you can, maybe I can too 🌱' },
     { userId: 'me',     day: 5, file: 'kyumin-sat', minutes: hm(18, 50) },
     { userId: 'timmy',  day: 5, file: 'timmy-sat',  minutes: hm(19, 23), location: 'Los Angeles, Valley Glen', caption: 'ian eastwood halloween' },
